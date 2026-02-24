@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-5 animate-up">
+                <div class="text-center mb-5">
+                    {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="Profile" class="rounded-circle mb-3"
+                        style="width: 150px; height: 150px; object-fit: cover; border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    {% else %}
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                        style="width: 150px; height: 150px; font-size: 4rem;">
+                        {{ profile.user.username|slice:":1"|upper }}
+                    </div>
+                    {% endif %}
+                    <h2 class="fw-bold">{{ profile.user.username }}</h2>
+                    <p class="text-muted">{{ profile.user.email }}</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="row g-3">
+                    {% csrf_token %}
+                    <h5 class="fw-bold">Update Profile Details</h5>
+                    <div class="col-md-12">
+                        <label class="form-label">Profile Image</label>
+                        {{ p_form.profile_image }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Age</label>
+                        {{ p_form.age }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Gender</label>
+                        {{ p_form.gender }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Hypertension</label>
+                        {{ p_form.hypertension }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Heart Disease</label>
+                        {{ p_form.heart_disease }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Ever Married</label>
+                        {{ p_form.ever_married }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Work Type</label>
+                        {{ p_form.work_type }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Residence Type</label>
+                        {{ p_form.residence_type }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Smoking Status</label>
+                        {{ p_form.smoking_status }}
+                    </div>
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-premium w-100 py-3 rounded-pill">Save Updates</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

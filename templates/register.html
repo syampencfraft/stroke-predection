@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-5 animate-up">
+                <h2 class="text-center mb-4 fw-bold">Sign Up for Stroke AI</h2>
+                <form method="POST" enctype="multipart/form-data" class="row g-3">
+                    {% csrf_token %}
+                    <h5 class="fw-bold mt-4">Account Details</h5>
+                    <div class="col-md-6">
+                        <label class="form-label">Username</label>
+                        {{ u_form.username }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        {{ u_form.email }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Password</label>
+                        {{ u_form.password }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Confirm Password</label>
+                        {{ u_form.confirm_password }}
+                    </div>
+
+                    <h5 class="fw-bold mt-4">Personal & Patient Details</h5>
+                    <div class="col-md-4">
+                        <label class="form-label">Profile Image</label>
+                        {{ p_form.profile_image }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Age</label>
+                        {{ p_form.age }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Gender</label>
+                        {{ p_form.gender }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Hypertension</label>
+                        {{ p_form.hypertension }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Heart Disease</label>
+                        {{ p_form.heart_disease }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Ever Married</label>
+                        {{ p_form.ever_married }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Work Type</label>
+                        {{ p_form.work_type }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Residence Type</label>
+                        {{ p_form.residence_type }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Smoking Status</label>
+                        {{ p_form.smoking_status }}
+                    </div>
+
+                    <div class="col-12 text-center mt-5">
+                        <button type="submit" class="btn btn-premium w-100 py-3 rounded-pill">Create Account</button>
+                        <p class="mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

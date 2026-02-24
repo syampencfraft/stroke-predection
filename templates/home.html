@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-section text-center">
+    <div class="container animate-up">
+        <h1 class="display-3 fw-bold mb-4">Advanced Stroke Prediction</h1>
+        <p class="lead mb-5 fs-4">Using Machine Learning to analyze health attributes and predict the likelihood of
+            stroke.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'predict' %}" class="btn btn-premium px-5 py-3">Start Prediction</a>
+            <a href="{% url 'history' %}" class="btn btn-outline-light px-5 py-3 rounded-pill">View History</a>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5 py-5">
+    <div class="row text-center g-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="display-5 mb-3">🧠</div>
+                <h3>Random Forest</h3>
+                <p>Robust ensemble learning model for high accuracy and minimal overfitting.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="display-5 mb-3">📊</div>
+                <h3>Bagging Classifier</h3>
+                <p>Bootstrap aggregating to improve stable and reliable results across datasets.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="display-5 mb-3">⚖️</div>
+                <h3>SMOTE Balanced</h3>
+                <p>Data balancing techniques ensure accurate predictions even for minority cases.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

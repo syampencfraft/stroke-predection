@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-5 animate-up text-center">
+                <h2 class="fw-bold mb-4">Prediction Result</h2>
+
+                <div class="prediction-box my-5">
+                    {% if prediction == 1 %}
+                    <div class="display-1 mb-3">⚠️</div>
+                    <h3 class="prediction-result stroke-risk">HIGH RISK OF STROKE</h3>
+                    <p class="lead mt-3">The model suggests a high probability of stroke based on the provided health
+                        factors.</p>
+                    {% else %}
+                    <div class="display-1 mb-3">✅</div>
+                    <h3 class="prediction-result no-risk">LOW RISK OF STROKE</h3>
+                    <p class="lead mt-3">The model suggests a low probability of stroke based on the provided health
+                        factors.</p>
+                    {% endif %}
+                </div>
+
+                <div class="progress mb-4" style="height: 30px; border-radius: 15px;">
+                    <div class="progress-bar {% if prediction == 1 %}bg-danger{% else %}bg-success{% endif %}"
+                        role="progressbar" style="width: {{ probability|stringformat:'.2f' }}%;"
+                        aria-valuenow="{{ probability }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ probability|stringformat:'.2f' }}% confidence
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-4 text-start">
+                    <div class="col-md-6 p-3 bg-light rounded-3">
+                        <p class="mb-1 text-muted small">Age</p>
+                        <p class="fw-bold mb-0">{{ data.age }} Years</p>
+                    </div>
+                    <div class="col-md-4 p-3 bg-light rounded-3">
+                        <p class="mb-1 text-muted small">Height / Weight</p>
+                        <p class="fw-bold mb-0">{{ data.height }} cm / {{ data.weight }} kg</p>
+                    </div>
+                    <div class="col-md-4 p-3 bg-light rounded-3 text-center">
+                        <p class="mb-1 text-muted small">BMI (Calculated)</p>
+                        <p class="fw-bold mb-0">{{ data.bmi }}</p>
+                        <span
+                            class="badge {% if data.bmi_category == 'Normal' %}bg-success{% else %}bg-warning text-dark{% endif %} mt-1">
+                            {{ data.bmi_category }}
+                        </span>
+                    </div>
+                    <div class="col-md-4 p-3 bg-light rounded-3">
+                        <p class="mb-1 text-muted small">Glucose Level</p>
+                        <p class="fw-bold mb-0">{{ data.avg_glucose_level }} mg/dL</p>
+                    </div>
+                    <div class="col-md-6 p-3 bg-light rounded-3">
+                        <p class="mb-1 text-muted small">Smoking Status</p>
+                        <p class="fw-bold mb-0">{{ data.smoking_status|title }}</p>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-4">
+                    <a href="{% url 'predict' %}" class="btn btn-premium px-5">Perform New Analysis</a>
+                    <a href="{% url 'home' %}" class="btn btn-link text-decoration-none ms-3">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

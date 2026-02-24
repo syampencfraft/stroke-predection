@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 animate-up">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold">Prediction History</h2>
+        <a href="{% url 'predict' %}" class="btn btn-premium">New Prediction</a>
+    </div>
+
+    <div class="glass-card p-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Age/Gender</th>
+                        <th>Health Metrics</th>
+                        <th>Risk Result</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in predictions %}
+                    <tr>
+                        <td>{{ p.created_at|date:"d M Y, H:i" }}</td>
+                        <td>
+                            <div class="fw-bold">{{ p.age }} Years</div>
+                            <div class="small text-muted">{{ p.gender }}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border me-1">H/W: {{ p.height }}/{{ p.weight }}</span>
+                            <span
+                                class="badge {% if p.bmi_category == 'Normal' %}bg-success text-white{% else %}bg-warning text-dark{% endif %} border me-1">
+                                BMI: {{ p.bmi }} ({{ p.bmi_category }})
+                            </span>
+                            <span class="badge bg-light text-dark border">Gluc: {{ p.avg_glucose_level }}</span>
+                        </td>
+                        <td>
+                            {% if p.prediction == 1 %}
+                            <span class="badge bg-danger">Stroke Risk</span>
+                            {% else %}
+                            <span class="badge bg-success">No Risk</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="fw-bold">{{ p.prob_percent|stringformat:".1f" }}%</div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <p class="text-muted">No prediction history found.</p>
+                            <a href="{% url 'predict' %}" class="btn btn-outline-primary btn-sm rounded-pill">Start your
+                                first prediction</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

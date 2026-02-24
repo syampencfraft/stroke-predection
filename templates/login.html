@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="glass-card p-5 animate-up">
+                <h2 class="text-center mb-4 fw-bold">Welcome Back</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control rounded-pill"
+                            placeholder="Enter username" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control rounded-pill"
+                            placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn-premium w-100 py-3 rounded-pill">Login</button>
+                    <div class="text-center mt-4">
+                        <p>Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
