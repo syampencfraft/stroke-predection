@@ -4,23 +4,33 @@
 <div class="container my-5 py-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <div class="glass-card p-5 animate-up">
-                <h2 class="text-center mb-4 fw-bold">Welcome Back</h2>
+            <div class="glass-card p-5 animate-fade">
+                <div class="text-center mb-5">
+                    <div class="display-6 text-rose mb-3"><i class="fas fa-user-shield" style="color: var(--primary-rose);"></i></div>
+                    <h2 class="fw-bold">Welcome Back</h2>
+                    <p class="text-muted">Access your health analysis portal</p>
+                </div>
                 <form method="POST">
                     {% csrf_token %}
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control rounded-pill"
-                            placeholder="Enter username" required>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0 border-secondary"><i class="fas fa-user text-muted"></i></span>
+                            <input type="text" name="username" class="form-control border-start-0 border-secondary" placeholder="Enter username" required>
+                        </div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control rounded-pill"
-                            placeholder="Enter password" required>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0 border-secondary"><i class="fas fa-lock text-muted"></i></span>
+                            <input type="password" name="password" class="form-control border-start-0 border-secondary" placeholder="Enter password" required>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-premium w-100 py-3 rounded-pill">Login</button>
-                    <div class="text-center mt-4">
-                        <p>Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+                    <button type="submit" class="btn btn-premium w-100 py-3 mt-2">
+                        Login to Dashboard <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                    <div class="text-center mt-5">
+                        <p class="text-muted">Don't have an account? <a href="{% url 'register' %}" class="text-rose fw-bold text-decoration-none" style="color: var(--primary-rose);">Sign up now</a></p>
                     </div>
                 </form>
             </div>

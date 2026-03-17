@@ -4,63 +4,81 @@
 {% block content %}
 <div class="container my-5 py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="glass-card p-5 animate-up text-center">
-                <h2 class="fw-bold mb-4">Prediction Result</h2>
+        <div class="col-md-9 col-lg-8">
+            <div class="glass-card p-5 animate-fade text-center overflow-hidden position-relative">
+                <!-- Background Decoration -->
+                <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: {% if prediction == 1 %}rgba(220, 53, 69, 0.05){% else %}rgba(25, 135, 84, 0.05){% endif %}; border-radius: 50%; filter: blur(80px);"></div>
 
-                <div class="prediction-box my-5">
+                <h2 class="fw-bold mb-4">Analysis Result</h2>
+
+                <div class="prediction-box my-5 animate-fade" style="animation-delay: 0.2s;">
                     {% if prediction == 1 %}
-                    <div class="display-1 mb-3">⚠️</div>
-                    <h3 class="prediction-result stroke-risk">HIGH RISK OF STROKE</h3>
-                    <p class="lead mt-3">The model suggests a high probability of stroke based on the provided health
-                        factors.</p>
+                    <div class="display-3 mb-4 text-danger"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h1 class="fw-black text-danger mb-3" style="letter-spacing: -1px; font-weight: 900;">HIGH STROKE RISK</h1>
+                    <p class="lead text-muted mx-auto" style="max-width: 600px;">The AI model has detected high-risk patterns in your physiological data. Immediate medical consultation is advised.</p>
                     {% else %}
-                    <div class="display-1 mb-3">✅</div>
-                    <h3 class="prediction-result no-risk">LOW RISK OF STROKE</h3>
-                    <p class="lead mt-3">The model suggests a low probability of stroke based on the provided health
-                        factors.</p>
+                    <div class="display-3 mb-4 text-success"><i class="fas fa-check-circle"></i></div>
+                    <h1 class="fw-black text-success mb-3" style="letter-spacing: -1px; font-weight: 900;">LOW STROKE RISK</h1>
+                    <p class="lead text-muted mx-auto" style="max-width: 600px;">The AI model indicates a low probability of stroke based on the provided metrics. Continue maintaining a healthy lifestyle.</p>
                     {% endif %}
                 </div>
 
-                <div class="progress mb-4" style="height: 30px; border-radius: 15px;">
-                    <div class="progress-bar {% if prediction == 1 %}bg-danger{% else %}bg-success{% endif %}"
-                        role="progressbar" style="width: {{ probability|stringformat:'.2f' }}%;"
-                        aria-valuenow="{{ probability }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ probability|stringformat:'.2f' }}% confidence
+                <!-- Confidence Gauge -->
+                <div class="mb-5 animate-fade" style="animation-delay: 0.4s;">
+                    <div class="d-flex justify-content-between mb-2 px-1">
+                        <span class="small text-muted fw-bold">AI CONFIDENCE LEVEL</span>
+                        <span class="small fw-bold {% if prediction == 1 %}text-danger{% else %}text-success{% endif %}">{{ probability|stringformat:'.2f' }}%</span>
+                    </div>
+                    <div class="progress" style="height: 12px; border-radius: 6px; background: rgba(255,255,255,0.05);">
+                        <div class="progress-bar {% if prediction == 1 %}bg-danger{% else %}bg-success{% endif %}"
+                            role="progressbar" style="width: {{ probability|stringformat:'.2f' }}%; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); shadow: 0 0 10px {% if prediction == 1 %}rgba(220, 53, 69, 0.5){% else %}rgba(25, 135, 84, 0.5){% endif %};"
+                            aria-valuenow="{{ probability }}">
+                        </div>
                     </div>
                 </div>
 
-                <div class="row g-3 mt-4 text-start">
-                    <div class="col-md-6 p-3 bg-light rounded-3">
-                        <p class="mb-1 text-muted small">Age</p>
-                        <p class="fw-bold mb-0">{{ data.age }} Years</p>
+                <div class="row g-3 mt-4 text-start animate-fade" style="animation-delay: 0.6s;">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-dark-subtle border border-secondary rounded-4 h-100" style="background: rgba(255,255,255,0.02);">
+                            <p class="mb-1 text-muted small"><i class="fas fa-id-badge me-2"></i>Patient Profile</p>
+                            <p class="fw-bold mb-0 text-dark">{{ data.age }} Year Old {{ data.gender|title }}</p>
+                        </div>
                     </div>
-                    <div class="col-md-4 p-3 bg-light rounded-3">
-                        <p class="mb-1 text-muted small">Height / Weight</p>
-                        <p class="fw-bold mb-0">{{ data.height }} cm / {{ data.weight }} kg</p>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-dark-subtle border border-secondary rounded-4 h-100" style="background: rgba(255,255,255,0.02);">
+                            <p class="mb-1 text-muted small"><i class="fas fa-arrows-alt-v me-2"></i>Body Metrics</p>
+                            <p class="fw-bold mb-0 text-dark">{{ data.height }} cm / {{ data.weight }} kg (BMI: {{ data.bmi }})</p>
+                            <span class="badge {% if data.bmi_category == 'Normal' %}bg-success-subtle text-success{% else %}bg-warning-subtle text-warning{% endif %} mt-1 p-0" style="font-size: 0.75rem;">{{ data.bmi_category }}</span>
+                        </div>
                     </div>
-                    <div class="col-md-4 p-3 bg-light rounded-3 text-center">
-                        <p class="mb-1 text-muted small">BMI (Calculated)</p>
-                        <p class="fw-bold mb-0">{{ data.bmi }}</p>
-                        <span
-                            class="badge {% if data.bmi_category == 'Normal' %}bg-success{% else %}bg-warning text-dark{% endif %} mt-1">
-                            {{ data.bmi_category }}
-                        </span>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-dark-subtle border border-secondary rounded-4 h-100" style="background: rgba(255,255,255,0.02);">
+                            <p class="mb-1 text-muted small"><i class="fas fa-vial me-2"></i>Glucose Level</p>
+                            <p class="fw-bold mb-0 text-dark">{{ data.avg_glucose_level }} mg/dL</p>
+                        </div>
                     </div>
-                    <div class="col-md-4 p-3 bg-light rounded-3">
-                        <p class="mb-1 text-muted small">Glucose Level</p>
-                        <p class="fw-bold mb-0">{{ data.avg_glucose_level }} mg/dL</p>
-                    </div>
-                    <div class="col-md-6 p-3 bg-light rounded-3">
-                        <p class="mb-1 text-muted small">Smoking Status</p>
-                        <p class="fw-bold mb-0">{{ data.smoking_status|title }}</p>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-dark-subtle border border-secondary rounded-4 h-100" style="background: rgba(255,255,255,0.02);">
+                            <p class="mb-1 text-muted small"><i class="fas fa-smoking me-2"></i>Lifestyle</p>
+                            <p class="fw-bold mb-0 text-dark">{{ data.smoking_status|title }}</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-5 pt-4">
-                    <a href="{% url 'predict' %}" class="btn btn-premium px-5">Perform New Analysis</a>
-                    <a href="{% url 'home' %}" class="btn btn-link text-decoration-none ms-3">Back to Home</a>
+                <div class="mt-5 pt-4 d-flex justify-content-center gap-3">
+                    <a href="{% url 'predict' %}" class="btn btn-premium px-4">
+                        <i class="fas fa-redo me-2"></i>New Analysis
+                    </a>
+                    <a href="{% if user.doctorprofile %}{% url 'doctor_dashboard' %}{% else %}{% url 'home' %}{% endif %}" class="btn btn-outline-rose px-4">
+                        <i class="fas fa-home me-2"></i>{% if user.doctorprofile %}Dashboard{% else %}Home{% endif %}
+                    </a>
                 </div>
+            </div>
+            
+            <div class="mt-4 p-4 glass-card border-danger animate-fade" style="animation-delay: 0.8s; background: rgba(220, 53, 69, 0.02); border: 1px dashed rgba(220, 53, 69, 0.2);">
+                <p class="small text-muted mb-0 text-center">
+                    <i class="fas fa-info-circle me-2"></i><strong>Medical Disclaimer:</strong> This prediction is based on machine learning probability and should not be considered a definitive medical diagnosis. Always consult a qualified healthcare professional.
+                </p>
             </div>
         </div>
     </div>

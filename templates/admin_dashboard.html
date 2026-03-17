@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 animate-fade">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">Administrative Dashboard</h2>
+            <p class="text-muted mb-0">Manage clinical network and user accounts.</p>
+        </div>
+        <div class="badge bg-rose-transparent text-rose px-3 py-2 rounded-pill" style="background: rgba(233, 30, 99, 0.1); border: 1px solid var(--primary-rose);">
+            <i class="fas fa-user-shield me-2"></i>ADMIN ACCESS
+        </div>
+    </div>
+
+    <!-- Doctors Table -->
+    <div class="mb-5">
+        <h4 class="fw-bold mb-4"><i class="fas fa-user-md me-2 text-rose" style="color: var(--primary-rose);"></i>Medical Practitioners</h4>
+        <div class="glass-card overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="color: var(--text-white);">
+                    <thead style="background: rgba(255, 255, 255, 0.05);">
+                        <tr>
+                            <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">DOCTOR</th>
+                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">SPECIALIZATION</th>
+                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">LICENSE</th>
+                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">STATUS</th>
+                            <th class="py-3 border-secondary text-rose text-end pe-4" style="color: var(--primary-rose);">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        {% for d in doctors %}
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td class="ps-4 py-4">
+                                <div class="d-flex align-items-center">
+                                    {% if d.profile_image %}
+                                    <img src="{{ d.profile_image.url }}" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid var(--glass-border);">
+                                    {% else %}
+                                    <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 40px; height: 40px; border: 1px solid var(--glass-border);">{{ d.user.last_name|slice:":1" }}</div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="fw-bold">Dr. {{ d.user.first_name }} {{ d.user.last_name }}</div>
+                                        <div class="small text-muted">{{ d.user.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ d.specialization }}</td>
+                            <td><code class="text-rose" style="color: #ff80ab;">{{ d.license_number }}</code></td>
+                            <td>
+                                {% if d.is_verified %}
+                                <span class="badge bg-success-subtle text-success border border-success px-3 py-2" style="background: rgba(25, 135, 84, 0.1);">Verified</span>
+                                {% else %}
+                                <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2" style="background: rgba(255, 193, 7, 0.1);">Pending Approval</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'approve_doctor' d.pk %}" class="btn {% if d.is_verified %}btn-outline-secondary{% else %}btn-premium{% endif %} btn-sm px-4">
+                                    {% if d.is_verified %}<i class="fas fa-times me-2"></i>Revoke{% else %}<i class="fas fa-check me-2"></i>Approve{% endif %}
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center py-5 text-muted">No doctor registrations found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patients/Users Table -->
+    <div>
+        <h4 class="fw-bold mb-4"><i class="fas fa-users me-2 text-rose" style="color: var(--primary-rose);"></i>Patients & Users</h4>
+        <div class="glass-card overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="color: var(--text-white);">
+                    <thead style="background: rgba(255, 255, 255, 0.05);">
+                        <tr>
+                            <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">USER</th>
+                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">AGE/GENDER</th>
+                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">DATA STATUS</th>
+                            <th class="py-3 border-secondary text-rose text-end pe-4" style="color: var(--primary-rose);">JOINED</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        {% for p in patients %}
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <td class="ps-4 py-4">
+                                <div class="fw-bold">{{ p.user.username }}</div>
+                                <div class="small text-muted">{{ p.user.email }}</div>
+                            </td>
+                            <td>{{ p.age }}Y / {{ p.gender }}</td>
+                            <td>
+                                {% if p.age and p.gender %}
+                                <span class="text-success small"><i class="fas fa-check-circle me-1"></i>Profile Complete</span>
+                                {% else %}
+                                <span class="text-warning small"><i class="fas fa-hourglass-half me-1"></i>Incomplete</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="small text-muted">{{ p.user.date_joined|date:"d M Y" }}</div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center py-5 text-muted">No user accounts found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+        transition: background 0.3s;
+    }
+</style>
+{% endblock %}

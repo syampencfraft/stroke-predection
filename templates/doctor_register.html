@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            <div class="glass-card p-5 animate-fade overflow-hidden position-relative">
+                <div class="text-center mb-5">
+                    <div class="display-4 text-rose mb-3" style="color: var(--primary-rose);"><i class="fas fa-user-md"></i></div>
+                    <h2 class="fw-bold">Doctor Registration</h2>
+                    <p class="text-muted">Join our clinical network to provide precision AI screening.</p>
+                </div>
+
+                {% if u_form.errors or d_form.errors %}
+                <div class="alert alert-danger border-danger bg-danger bg-opacity-10 text-danger mb-4 rounded-4 shadow-sm" role="alert">
+                    <ul class="mb-0 ps-3">
+                        {% for field in u_form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in u_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        {% for field in d_form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in d_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        <!-- Account Details -->
+                        <div class="col-12">
+                            <h5 class="text-rose mb-3 border-bottom border-secondary pb-2" style="color: var(--primary-rose);"><i class="fas fa-user-circle me-2"></i>Account Access</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ u_form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ u_form.last_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            {{ u_form.username }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address</label>
+                            {{ u_form.email }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Password</label>
+                            {{ u_form.password }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Confirm Password</label>
+                            {{ u_form.confirm_password }}
+                        </div>
+
+                        <!-- Professional Details -->
+                        <div class="col-12 mt-5">
+                            <h5 class="text-rose mb-3 border-bottom border-secondary pb-2" style="color: var(--primary-rose);"><i class="fas fa-stethoscope me-2"></i>Professional Info</h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Specialization</label>
+                            {{ d_form.specialization }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Medical License #</label>
+                            {{ d_form.license_number }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Affiliated Hospital</label>
+                            {{ d_form.hospital }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Phone</label>
+                            {{ d_form.phone }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Profile Image (Professional)</label>
+                            {{ d_form.profile_image }}
+                        </div>
+
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-premium w-100 py-3 shadow">
+                                <i class="fas fa-user-plus me-2"></i>Complete Registration
+                            </button>
+                            <p class="text-center mt-3 text-muted small">Already registered? <a href="{% url 'doctor_login' %}" class="text-rose text-decoration-none">Doctor Login</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styling for Django-rendered forms */
+    input, select {
+        display: block;
+        width: 100%;
+        padding: 12px 18px;
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid var(--glass-border) !important;
+        color: white !important;
+        border-radius: 50px !important;
+        transition: var(--transition);
+        font-size: 0.95rem;
+    }
+    input:focus, select:focus {
+        border-color: var(--primary-rose) !important;
+        outline: none;
+        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+</style>
+{% endblock %}

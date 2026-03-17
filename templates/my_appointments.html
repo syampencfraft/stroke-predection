@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 animate-fade">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">My Appointments</h2>
+            <p class="text-muted mb-0">Track your consultation requests and history.</p>
+        </div>
+        <a href="{% url 'book_appointment' %}" class="btn btn-premium px-4 rounded-pill">
+            <i class="fas fa-plus me-2"></i>New Booking
+        </a>
+    </div>
+
+    <div class="glass-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="color: #000000;">
+                <thead style="background: rgba(255, 255, 255, 0.05);">
+                    <tr>
+                        <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">DOCTOR</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">DATE & TIME</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">REASON</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">STATUS</th>
+                        <th class="py-3 border-secondary text-rose text-end pe-4" style="color: var(--primary-rose);">BOOKED ON</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    {% for a in appointments %}
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <td class="ps-4 py-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 35px; height: 35px; border: 1px solid var(--glass-border);">{{ a.doctor.user.last_name|slice:":1" }}</div>
+                                <div>
+                                    <div class="fw-bold text-dark">Dr. {% if a.doctor.user.last_name %}{{ a.doctor.user.last_name }}{% else %}{{ a.doctor.user.username }}{% endif %}</div>
+                                    <div class="small text-rose text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem; color: var(--primary-rose);">{{ a.doctor.specialization }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">{{ a.date|date:"d M Y" }}</div>
+                            <div class="small text-dark"><i class="far fa-clock me-1"></i>{{ a.time|time:"H:i" }}</div>
+                        </td>
+                        <td>
+                            <div class="text-truncate text-dark" style="max-width: 250px;" title="{{ a.reason }}">{{ a.reason }}</div>
+                        </td>
+                        <td>
+                            {% if a.status == 'Approved' %}
+                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2" style="background: rgba(25, 135, 84, 0.1);">Approved</span>
+                            {% elif a.status == 'Rejected' %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2" style="background: rgba(220, 53, 69, 0.1);">Rejected</span>
+                            {% else %}
+                            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2" style="background: rgba(255, 193, 7, 0.1);">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="small text-dark">{{ a.created_at|date:"d M Y" }}</div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-5 text-muted">You haven't booked any appointments yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

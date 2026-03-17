@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 py-5">
+    <div class="row g-5">
+        <!-- Sidebar / Doctor List -->
+        <div class="col-lg-4">
+            <h4 class="fw-bold mb-4 text-rose" style="color: var(--primary-rose);">Verified Practitioners</h4>
+            <div class="glass-card p-3">
+                <div class="list-group list-group-flush bg-transparent">
+                    {% for d in doctors %}
+                    <div class="list-group-item bg-transparent border-secondary py-3 px-0">
+                        <div class="d-flex align-items-center">
+                            {% if d.profile_image %}
+                            <img src="{{ d.profile_image.url }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid var(--primary-rose);">
+                            {% else %}
+                            <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 50px; height: 50px; border: 2px solid var(--glass-border);">{{ d.user.last_name|slice:":1" }}</div>
+                            {% endif %}
+                            <div>
+                                <h6 class="mb-0 fw-bold text-white">Dr. {% if d.user.last_name %}{{ d.user.last_name }}{% else %}{{ d.user.username }}{% endif %}</h6>
+                                <p class="small text-muted mb-0" style="color: var(--primary-rose) !important;">{{ d.specialization }}</p>
+                                <a href="{% url 'view_doctor_profile' d.id %}" class="small text-rose text-decoration-none opacity-75">Select Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted small">No verified doctors available yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="col-lg-8">
+            <div class="glass-card p-5 animate-fade">
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-2">Book an Appointment</h2>
+                    <p class="text-muted">Fill in the details below to request a consultation.</p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label class="form-label">Doctor / Physician</label>
+                            {{ form.doctor }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Preferred Date</label>
+                            {{ form.date }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Preferred Time</label>
+                            {{ form.time }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Reason for Consultation</label>
+                            {{ form.reason }}
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-premium w-100 py-3 shadow">
+                                <i class="fas fa-calendar-plus me-2"></i>Send Booking Request
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input, select, textarea {
+        display: block;
+        width: 100%;
+        padding: 12px 18px;
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid var(--glass-border) !important;
+        color: white !important;
+        border-radius: 15px !important;
+        transition: var(--transition);
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--primary-rose) !important;
+        outline: none;
+        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+    }
+    option { color: black !important; }
+    textarea { border-radius: 20px !important; }
+    .list-group-item:last-child { border: none !important; }
+</style>
+
+<script>
+    // Set minimum date for appointment booking to today
+    document.addEventListener("DOMContentLoaded", function() {
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.querySelector('input[type="date"]');
+        if (dateInput) {
+            dateInput.setAttribute('min', today);
+        }
+    });
+</script>
+{% endblock %}

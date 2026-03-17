@@ -3,29 +3,43 @@
 {% block content %}
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="glass-card p-5 animate-up">
+        <div class="col-md-9 col-lg-8">
+            <div class="glass-card p-5 animate-fade overflow-hidden position-relative">
+                 <!-- Background Glow -->
+                 <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(233, 30, 99, 0.05); border-radius: 50%; filter: blur(50px);"></div>
+
                 <div class="text-center mb-5">
-                    {% if profile.profile_image %}
-                    <img src="{{ profile.profile_image.url }}" alt="Profile" class="rounded-circle mb-3"
-                        style="width: 150px; height: 150px; object-fit: cover; border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    {% else %}
-                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                        style="width: 150px; height: 150px; font-size: 4rem;">
-                        {{ profile.user.username|slice:":1"|upper }}
+                    <div class="position-relative d-inline-block mb-4">
+                        {% if user.userprofile.profile_image %}
+                        <img src="{{ user.userprofile.profile_image.url }}" alt="Profile" class="rounded-circle"
+                            style="width: 160px; height: 160px; object-fit: cover; border: 4px solid var(--primary-rose); box-shadow: 0 0 30px rgba(233, 30, 99, 0.2);">
+                        {% else %}
+                        <div class="bg-rose-transparent text-rose rounded-circle d-inline-flex align-items-center justify-content-center"
+                            style="width: 160px; height: 160px; font-size: 5rem; background: rgba(233, 30, 99, 0.1); border: 4px solid var(--primary-rose);">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        {% endif %}
+                        <div class="position-absolute bottom-0 start-50 translate-middle-x bg-rose px-3 py-1 rounded-pill small fw-bold text-white shadow" style="background: var(--primary-rose); transform: translateY(50%);">
+                            PREMIUM MEMBER
+                        </div>
                     </div>
-                    {% endif %}
-                    <h2 class="fw-bold">{{ profile.user.username }}</h2>
-                    <p class="text-muted">{{ profile.user.email }}</p>
+                    <h2 class="fw-bold mt-3">{{ user.username }}</h2>
+                    <p class="text-muted"><i class="fas fa-envelope me-2"></i>{{ user.email }}</p>
                 </div>
 
-                <form method="POST" enctype="multipart/form-data" class="row g-3">
+                <hr class="border-secondary my-5 opacity-25">
+
+                <form method="POST" enctype="multipart/form-data" class="row g-4">
                     {% csrf_token %}
-                    <h5 class="fw-bold">Update Profile Details</h5>
-                    <div class="col-md-12">
-                        <label class="form-label">Profile Image</label>
+                    <div class="col-12">
+                        <h5 class="text-rose mb-3" style="color: var(--primary-rose);"><i class="fas fa-edit me-2"></i>Update Personal Information</h5>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label class="form-label">Profile Avatar</label>
                         {{ p_form.profile_image }}
                     </div>
+                    
                     <div class="col-md-6">
                         <label class="form-label">Age</label>
                         {{ p_form.age }}
@@ -34,36 +48,69 @@
                         <label class="form-label">Gender</label>
                         {{ p_form.gender }}
                     </div>
+                    
                     <div class="col-md-6">
-                        <label class="form-label">Hypertension</label>
+                        <label class="form-label">Hypertension Status</label>
                         {{ p_form.hypertension }}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Heart Disease</label>
+                        <label class="form-label">Heart Disease History</label>
                         {{ p_form.heart_disease }}
                     </div>
+                    
                     <div class="col-md-6">
-                        <label class="form-label">Ever Married</label>
+                        <label class="form-label">Relationship Status</label>
                         {{ p_form.ever_married }}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Work Type</label>
+                        <label class="form-label">Occupation Type</label>
                         {{ p_form.work_type }}
                     </div>
+                    
                     <div class="col-md-6">
-                        <label class="form-label">Residence Type</label>
+                        <label class="form-label">Residence Zone</label>
                         {{ p_form.residence_type }}
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Smoking Status</label>
                         {{ p_form.smoking_status }}
                     </div>
-                    <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-premium w-100 py-3 rounded-pill">Save Updates</button>
+
+                    <div class="col-12 mt-5">
+                        <button type="submit" class="btn btn-premium w-100 py-3 shadow">
+                            <i class="fas fa-save me-2"></i>Apply Changes
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Styling for Django-rendered forms in profile */
+    input, select {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    input:focus, select:focus {
+        border-color: var(--primary-rose) !important;
+        outline: none;
+        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+        background: rgba(255, 255, 255, 0.04) !important;
+    }
+    input[type="file"] {
+        padding: 10px;
+    }
+    option {
+        background: #0a0a0a;
+        color: white;
+    }
+</style>
 {% endblock %}

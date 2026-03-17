@@ -1,13 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 import joblib
 import pandas as pd
 import os
-from .models import PredictionHistory, UserProfile
-from .forms import UserRegistrationForm, UserProfileForm
+from .models import PredictionHistory, UserProfile, DoctorProfile, Appointment
+from .forms import UserRegistrationForm, UserProfileForm, DoctorRegistrationForm, DoctorProfileForm, AppointmentForm
 
 # Load the model and components
 MODEL_PATH = os.path.join('data', 'best_stroke_model.pkl')
@@ -36,7 +37,7 @@ def register(request):
             profile.user = user
             profile.save()
             login(request, user)
-            return redirect('home')
+            return redirect('login')
     else:
         u_form = UserRegistrationForm()
         p_form = UserProfileForm()
@@ -47,11 +48,48 @@ def login_view(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
+            
+            # Check if user is a doctor
+            if hasattr(user, 'doctorprofile'):
+                if not user.doctorprofile.is_verified:
+                    messages.warning(request, "Your doctor account is pending admin approval. Please wait for verification.")
+                    return redirect('login')
+                else:
+                    login(request, user)
+                    return redirect('doctor_dashboard')
+            
+            # Regular user / Admin
             login(request, user)
+            if user.is_superuser:
+                return redirect('admin_dashboard')
             return redirect('home')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
+
+def doctor_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            
+            # Check if user is a doctor
+            if hasattr(user, 'doctorprofile'):
+                if not user.doctorprofile.is_verified:
+                    messages.warning(request, "Your doctor account is pending admin approval. Please wait for verification.")
+                    return redirect('login')
+                else:
+                    login(request, user)
+                    return redirect('doctor_dashboard')
+            
+            # Regular user / Admin login through dr portal? Allow but redirect normally
+            login(request, user)
+            if user.is_superuser:
+                return redirect('admin_dashboard')
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'doctor_login.html', {'form': form})
 
 def logout_view(request):
     logout(request)
@@ -59,7 +97,15 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    user_profile = UserProfile.objects.get(user=request.user)
+    # If doctor, redirect to doctor profile
+    if hasattr(request.user, 'doctorprofile'):
+        return redirect('doctor_profile')
+        
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        # Create a profile if it doesn't exist (e.g. for superusers or migration edge cases)
+        return redirect('home')
     if request.method == 'POST':
         p_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
         if p_form.is_valid():
@@ -150,21 +196,23 @@ def predict(request):
         return render(request, 'result.html', context)
 
     # If GET, pre-populate with user profile data if available
-    try:
-        user_profile = UserProfile.objects.get(user=request.user)
-        initial_data = {
-            'gender': user_profile.gender,
-            'age': user_profile.age,
-            'hypertension': user_profile.hypertension,
-            'heart_disease': user_profile.heart_disease,
-            'ever_married': user_profile.ever_married,
-            'work_type': user_profile.work_type,
-            'residence_type': user_profile.residence_type,
-            'smoking_status': user_profile.smoking_status,
-        }
-    except UserProfile.DoesNotExist:
-        initial_data = {}
-
+    initial_data = {}
+    if request.user.is_authenticated:
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            initial_data = {
+                'gender': user_profile.gender,
+                'age': user_profile.age,
+                'hypertension': user_profile.hypertension,
+                'heart_disease': user_profile.heart_disease,
+                'ever_married': user_profile.ever_married,
+                'work_type': user_profile.work_type,
+                'residence_type': user_profile.residence_type,
+                'smoking_status': user_profile.smoking_status,
+            }
+        except UserProfile.DoesNotExist:
+            pass
+            
     return render(request, 'predict.html', {'initial_data': initial_data})
 
 @login_required
@@ -174,3 +222,134 @@ def history(request):
     for p in predictions:
         p.prob_percent = p.prediction_probability * 100 if p.prediction_probability else 0
     return render(request, 'history.html', {'predictions': predictions})
+
+def about(request):
+    return render(request, 'about.html')
+
+def contact(request):
+    return render(request, 'contact.html')
+
+def doctor_register(request):
+    if request.method == 'POST':
+        u_form = DoctorRegistrationForm(request.POST)
+        d_form = DoctorProfileForm(request.POST, request.FILES)
+        if u_form.is_valid() and d_form.is_valid():
+            user = u_form.save(commit=False)
+            user.set_password(u_form.cleaned_data['password'])
+            user.save()
+            profile = d_form.save(commit=False)
+            profile.user = user
+            profile.save()
+            messages.info(request, "Registration successful! Please wait for admin approval before logging in.")
+            return redirect('login')
+    else:
+        u_form = DoctorRegistrationForm()
+        d_form = DoctorProfileForm()
+    return render(request, 'doctor_register.html', {'u_form': u_form, 'd_form': d_form})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_dashboard(request):
+    patients = UserProfile.objects.all()
+    doctors = DoctorProfile.objects.all()
+    context = {
+        'patients': patients,
+        'doctors': doctors
+    }
+    return render(request, 'admin_dashboard.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def approve_doctor(request, pk):
+    doctor = get_object_or_404(DoctorProfile, pk=pk)
+    doctor.is_verified = not doctor.is_verified
+    doctor.save()
+    return redirect('admin_dashboard')
+
+@login_required
+def book_appointment(request):
+    # Doctors shouldn't book appointments through this patient-focused view
+    if hasattr(request.user, 'doctorprofile'):
+        return redirect('doctor_dashboard')
+        
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.patient = request.user
+            appointment.save()
+            return redirect('my_appointments')
+    else:
+        # Pre-select doctor if pk is in GET
+        doctor_id = request.GET.get('doctor')
+        initial_data = {}
+        if doctor_id:
+            initial_data['doctor'] = doctor_id
+        form = AppointmentForm(initial=initial_data)
+    
+    doctors = DoctorProfile.objects.filter(is_verified=True)
+    return render(request, 'book_appointment.html', {'form': form, 'doctors': doctors})
+
+@login_required
+def my_appointments(request):
+    appointments = Appointment.objects.filter(patient=request.user).order_by('-created_at')
+    return render(request, 'my_appointments.html', {'appointments': appointments})
+
+@login_required
+def doctor_dashboard(request):
+    # Only allow doctors to access their dashboard
+    if not hasattr(request.user, 'doctorprofile'):
+        return redirect('home')
+    
+    doctor = request.user.doctorprofile
+    appointments = Appointment.objects.filter(doctor=doctor).order_by('-date', '-time')
+    return render(request, 'doctor_dashboard.html', {'appointments': appointments, 'doctor': doctor})
+
+@login_required
+def handle_appointment(request, pk, action):
+    appointment = get_object_or_404(Appointment, pk=pk)
+    # Security: check if the doctor owns this appointment
+    if not hasattr(request.user, 'doctorprofile') or appointment.doctor != request.user.doctorprofile:
+        return redirect('home')
+    
+    if action == 'approve':
+        appointment.status = 'Approved'
+    elif action == 'reject':
+        appointment.status = 'Rejected'
+    
+    appointment.save()
+    return redirect('doctor_dashboard')
+
+@login_required
+def doctor_profile(request):
+    if not hasattr(request.user, 'doctorprofile'):
+        return redirect('home')
+    doctor = request.user.doctorprofile
+    # Stats for the profile card
+    appointments = Appointment.objects.filter(doctor=doctor)
+    stats = {
+        'total': appointments.count(),
+        'approved': appointments.filter(status='Approved').count(),
+        'pending': appointments.filter(status='Pending').count()
+    }
+    return render(request, 'doctor_profile.html', {'doctor': doctor, 'stats': stats})
+
+@login_required
+def edit_doctor_profile(request):
+    if not hasattr(request.user, 'doctorprofile'):
+        return redirect('home')
+    doctor = request.user.doctorprofile
+    if request.method == 'POST':
+        form = DoctorProfileForm(request.POST, request.FILES, instance=doctor)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('doctor_profile')
+    else:
+        form = DoctorProfileForm(instance=doctor)
+    return render(request, 'edit_doctor_profile.html', {'form': form, 'doctor': doctor})
+
+def view_doctor_profile(request, pk):
+    doctor = get_object_or_404(DoctorProfile, pk=pk)
+    if not doctor.is_verified:
+        return redirect('home')
+    return render(request, 'view_doctor.html', {'doctor': doctor})

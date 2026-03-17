@@ -37,3 +37,33 @@ class PredictionHistory(models.Model):
 
     def __str__(self):
         return f"Prediction for Age {self.age} - Result: {'Stroke' if self.prediction == 1 else 'No Stroke'}"
+
+class DoctorProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.ImageField(upload_to='doctors/', null=True, blank=True)
+    specialization = models.CharField(max_length=100)
+    license_number = models.CharField(max_length=50, unique=True)
+    hospital = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Dr. {self.user.last_name or self.user.username} ({self.specialization})"
+
+class Appointment(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='doctor_appointments')
+    date = models.DateField()
+    time = models.TimeField()
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Appointment: {self.patient.username} with {self.doctor.user.last_name} on {self.date}"

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 animate-fade">
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-1">Doctor Dashboard</h2>
+            <p class="text-muted">Manage your clinical schedule and patient requests.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <div class="display-6 fw-bold text-rose">{{ appointments.count }}</div>
+                <div class="text-muted small text-uppercase">Total Requests</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <div class="display-6 fw-bold text-success">{% with appointments|dictsort:"status" as sorted %}{% for a in sorted %}{% if a.status == 'Approved' %}{{ forloop.revcounter }}{% endif %}{% endfor %}{% endwith %}</div>
+                <div class="text-muted small text-uppercase">Approved</div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="fw-bold mb-4">Patient Appointments</h4>
+    <div class="glass-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="color: #000000;">
+                <thead style="background: rgba(255, 255, 255, 0.05);">
+                    <tr>
+                        <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">PATIENT</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">DATE & TIME</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">REASON</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">STATUS</th>
+                        <th class="py-3 border-secondary text-rose text-end pe-4" style="color: var(--primary-rose);">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    {% for a in appointments %}
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <td class="ps-4 py-4">
+                            <div class="fw-bold text-dark">{{ a.patient.username }}</div>
+                            <div class="small text-dark opacity-75">{{ a.patient.email }}</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">{{ a.date|date:"d M Y" }}</div>
+                            <div class="small text-dark opacity-75">{{ a.time|time:"H:i" }}</div>
+                        </td>
+                        <td>
+                            <div class="text-dark small" style="max-width: 200px;">{{ a.reason|truncatechars:50 }}</div>
+                        </td>
+                        <td>
+                            {% if a.status == 'Approved' %}
+                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2" style="background: rgba(25, 135, 84, 0.1);">Approved</span>
+                            {% elif a.status == 'Rejected' %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2" style="background: rgba(220, 53, 69, 0.1);">Rejected</span>
+                            {% else %}
+                            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2" style="background: rgba(255, 193, 7, 0.1);">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            {% if a.status == 'Pending' %}
+                            <a href="{% url 'handle_appointment' a.pk 'approve' %}" class="btn btn-success btn-sm rounded-pill px-3 me-2">Approve</a>
+                            <a href="{% url 'handle_appointment' a.pk 'reject' %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">Reject</a>
+                            {% else %}
+                            <span class="text-dark small opacity-75">Processed</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-5 text-muted">No appointments found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

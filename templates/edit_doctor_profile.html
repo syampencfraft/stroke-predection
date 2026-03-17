@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 py-5 animate-fade">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card p-5">
+                <div class="d-flex align-items-center mb-5">
+                    <a href="{% url 'doctor_profile' %}" class="btn btn-outline-secondary btn-sm rounded-circle me-3">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h2 class="fw-bold mb-0">Edit Professional Profile</h2>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="needs-validation">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        <!-- Profile Image Upload -->
+                        <div class="col-12 text-center mb-4">
+                            <div class="position-relative d-inline-block">
+                                {% if doctor.profile_image %}
+                                <img src="{{ doctor.profile_image.url }}" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid var(--primary-rose);">
+                                {% else %}
+                                <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-rose shadow" style="width: 120px; height: 120px; border: 3px solid var(--glass-border);">
+                                    <i class="fas fa-user-md fa-3x"></i>
+                                </div>
+                                {% endif %}
+                                <label for="id_profile_image" class="position-absolute bottom-0 end-0 bg-rose p-2 rounded-circle shadow cursor-pointer" style="background: var(--primary-rose); color: white; cursor: pointer;">
+                                    <i class="fas fa-camera small"></i>
+                                </label>
+                            </div>
+                            <div class="mt-3 opacity-0 position-absolute" style="z-index: -1;">
+                                {{ form.profile_image }}
+                            </div>
+                            <p class="small text-muted mt-2">Update your profile identity</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Specialization</label>
+                            {{ form.specialization }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Medical License Number</label>
+                            {{ form.license_number }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Hospital / Clinic</label>
+                            {{ form.hospital }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Phone Number</label>
+                            {{ form.phone }}
+                        </div>
+
+                        <div class="col-12 mt-5">
+                            <div class="p-4 rounded-4" style="background: rgba(233, 30, 99, 0.05); border: 1px dashed rgba(233, 30, 99, 0.2);">
+                                <h6 class="fw-bold mb-2">Professional Commitment</h6>
+                                <p class="small text-muted mb-0">Your profile is currently verified. Significant changes to your clinical information may trigger a re-verification process by the system administration.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mt-4 text-end">
+                            <a href="{% url 'doctor_profile' %}" class="btn btn-link text-muted text-decoration-none me-3">Cancel Changes</a>
+                            <button type="submit" class="btn btn-premium px-5 py-3 rounded-pill shadow">
+                                <i class="fas fa-save me-2"></i>Update Professional Profile
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input, select, textarea {
+        display: block;
+        width: 100%;
+        padding: 12px 18px;
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid var(--glass-border) !important;
+        color: white !important;
+        border-radius: 15px !important;
+        transition: var(--transition);
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--primary-rose) !important;
+        outline: none;
+        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+    }
+    option { color: black !important; }
+    .cursor-pointer { cursor: pointer; }
+</style>
+{% endblock %}

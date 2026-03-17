@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-section text-center position-relative" style="background-image: url('{% static 'images/about_brain_tech_bg.png' %}'); background-size: cover; background-position: center;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(160, 27, 44, 0.4) 0%, rgba(10, 10, 10, 0.9) 100%); z-index: 1;"></div>
+    <div class="container animate-fade position-relative" style="z-index: 2;">
+        <h1 class="hero-title" style="text-shadow: 0 4px 15px rgba(0,0,0,0.5);">About Stroke AI</h1>
+        <p class="lead mb-5 text-light mx-auto" style="max-width: 800px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+            We are dedicated to revolutionizing early stroke detection through high-precision machine learning and clinical data analysis.
+        </p>
+    </div>
+</section>
+
+<section class="container my-5 py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-lg-6 animate-fade">
+            <h2 class="fw-bold mb-4">Our Mission</h2>
+            <p class="text-muted fs-5 mb-4">
+                Stroke is a leading cause of disability globally. Many of these cases are preventable if risk factors are identified early. Our mission is to provide accessible, AI-powered screening tools that empower individuals and healthcare providers with actionable health insights.
+            </p>
+            <div class="glass-card p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-rose-transparent p-2 rounded-circle me-3" style="background: rgba(233, 30, 99, 0.1);"><i class="fas fa-microchip text-rose" style="color: var(--primary-rose);"></i></div>
+                    <h5 class="mb-0 fw-bold">Advanced ML Models</h5>
+                </div>
+                <p class="text-muted mb-0 small">Utilizing Random Forest, Bagging, and SMOTE balancing to achieve industry-leading prediction accuracy.</p>
+            </div>
+        </div>
+        <div class="col-lg-6 animate-fade" style="animation-delay: 0.2s;">
+            <div class="glass-card p-4 border-0" style="background: rgba(255,255,255,0.02);">
+                <img src="/static/images/about_brain_tech_bg.png" class="img-fluid rounded-4 shadow-lg border border-secondary border-opacity-25" alt="AI Brain Analysis">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5 py-5">
+    <div class="row text-center g-4 animate-fade" style="animation-delay: 0.4s;">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="display-6 text-rose mb-3" style="color: var(--primary-rose);"><i class="fas fa-user-md"></i></div>
+                <h4 class="fw-bold">Clinical Precision</h4>
+                <p class="text-muted small">Our algorithms are trained on extensive clinical datasets representing diverse physiological parameters.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="display-6 text-rose mb-3" style="color: var(--primary-rose);"><i class="fas fa-user-secret"></i></div>
+                <h4 class="fw-bold">Privacy First</h4>
+                <p class="text-muted small">Secure data handling ensures that all health information processed is encrypted and private.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="display-6 text-rose mb-3" style="color: var(--primary-rose);"><i class="fas fa-tachometer-alt"></i></div>
+                <h4 class="fw-bold">Real-time Analysis</h4>
+                <p class="text-muted small">Get results in milliseconds, allowing for quick screening during clinical or home assessments.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

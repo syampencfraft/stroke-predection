@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 py-5 animate-fade">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="glass-card overflow-hidden">
+                <div class="row g-0">
+                    <!-- Left: Profile Image & Header -->
+                    <div class="col-md-4 bg-dark bg-opacity-25 p-5 text-center border-md-end border-secondary border-opacity-25">
+                        <div class="mb-4">
+                            {% if doctor.profile_image %}
+                            <img src="{{ doctor.profile_image.url }}" class="rounded-circle shadow-lg" style="width: 180px; height: 180px; object-fit: cover; border: 4px solid var(--primary-rose);">
+                            {% else %}
+                            <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-rose shadow-lg mx-auto" style="width: 180px; height: 180px; border: 4px solid var(--glass-border); font-size: 5rem;">
+                                {{ doctor.user.last_name|slice:":1" }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <h2 class="fw-bold mb-1">Dr. {% if doctor.user.last_name %}{{ doctor.user.last_name }}{% else %}{{ doctor.user.username }}{% endif %}</h2>
+                        <p class="text-rose h5 mb-4">{{ doctor.specialization }}</p>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'book_appointment' %}?doctor={{ doctor.id }}" class="btn btn-premium rounded-pill py-3">
+                                <i class="fas fa-calendar-check me-2"></i>Book Consultation
+                            </a>
+                            <a href="{% url 'book_appointment' %}" class="btn btn-outline-rose rounded-pill">
+                                <i class="fas fa-chevron-left me-2"></i>Back to Search
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Medical Details -->
+                    <div class="col-md-8 p-5">
+                        <div class="d-flex justify-content-between align-items-center mb-5">
+                            <h4 class="fw-bold mb-0">Medical Practitioner Details</h4>
+                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2">
+                                <i class="fas fa-check-circle me-1"></i>Verified Professional
+                            </span>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <div class="col-sm-6">
+                                <div class="mb-4">
+                                    <label class="small text-muted text-uppercase fw-bold mb-2">Specialization</label>
+                                    <p class="h5 fw-bold text-white">{{ doctor.specialization }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="small text-muted text-uppercase fw-bold mb-2">Affiliated Hospital</label>
+                                    <p class="h5 fw-bold text-white">{{ doctor.hospital }}</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-4">
+                                    <label class="small text-muted text-uppercase fw-bold mb-2">Medical License</label>
+                                    <p class="h5 fw-bold text-white">{{ doctor.license_number }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="small text-muted text-uppercase fw-bold mb-2">Contact Support</label>
+                                    <p class="h5 fw-bold text-white">{{ doctor.phone }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-4 bg-white bg-opacity-05 border border-secondary border-opacity-25">
+                            <h6 class="fw-bold text-rose mb-3"><i class="fas fa-info-circle me-2"></i>About the Practitioner</h6>
+                            <p class="text-muted mb-0">
+                                Dr. {% if doctor.user.last_name %}{{ doctor.user.last_name }}{% else %}{{ doctor.user.username }}{% endif %} is a verified health professional specializing in {{ doctor.specialization }} at {{ doctor.hospital }}. They are part of our clinical AI network providing precision stroke risk assessment and insights.
+                            </p>
+                        </div>
+                        
+                        <div class="mt-5 text-end text-muted small">
+                            Joined our network in {{ doctor.created_at|date:"F Y" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-white.bg-opacity-05 { background: rgba(255, 255, 255, 0.03); }
+    @media (min-width: 768px) {
+        .border-md-end { border-right: 1px solid var(--glass-border) !important; }
+    }
+</style>
+{% endblock %}

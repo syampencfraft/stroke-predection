@@ -1,57 +1,77 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container my-5 animate-up">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h2 class="fw-bold">Prediction History</h2>
-        <a href="{% url 'predict' %}" class="btn btn-premium">New Prediction</a>
+<div class="container my-5 animate-fade">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Prediction History</h2>
+            <p class="text-muted mb-0">Review your past health assessments and trends.</p>
+        </div>
+        <a href="{% url 'predict' %}" class="btn btn-premium px-4">
+            <i class="fas fa-plus me-2"></i>New Analysis
+        </a>
     </div>
 
-    <div class="glass-card p-4 overflow-hidden">
+    <div class="glass-card overflow-hidden">
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="bg-light">
+            <table class="table table-hover align-middle mb-0" style="color: var(--text-white);">
+                <thead style="background: rgba(255, 255, 255, 0.05);">
                     <tr>
-                        <th>Date</th>
-                        <th>Age/Gender</th>
-                        <th>Health Metrics</th>
-                        <th>Risk Result</th>
-                        <th>Confidence</th>
+                        <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">DATE</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">PATIENT INFO</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">HEALTH METRICS</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">RESULT</th>
+                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">CONFIDENCE</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="border-top-0">
                     {% for p in predictions %}
-                    <tr>
-                        <td>{{ p.created_at|date:"d M Y, H:i" }}</td>
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <td class="ps-4 py-4">
+                            <div class="fw-bold">{{ p.created_at|date:"d M Y" }}</div>
+                            <div class="small text-muted">{{ p.created_at|date:"H:i" }}</div>
+                        </td>
                         <td>
                             <div class="fw-bold">{{ p.age }} Years</div>
                             <div class="small text-muted">{{ p.gender }}</div>
                         </td>
                         <td>
-                            <span class="badge bg-light text-dark border me-1">H/W: {{ p.height }}/{{ p.weight }}</span>
-                            <span
-                                class="badge {% if p.bmi_category == 'Normal' %}bg-success text-white{% else %}bg-warning text-dark{% endif %} border me-1">
-                                BMI: {{ p.bmi }} ({{ p.bmi_category }})
-                            </span>
-                            <span class="badge bg-light text-dark border">Gluc: {{ p.avg_glucose_level }}</span>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-dark border border-secondary px-2 py-2">H/W: {{ p.height }}/{{ p.weight }}</span>
+                                <span class="badge bg-dark border border-secondary px-2 py-2 {% if p.bmi_category == 'Normal' %}text-success{% else %}text-warning{% endif %}">
+                                    BMI: {{ p.bmi }} ({{ p.bmi_category }})
+                                </span>
+                                <span class="badge bg-dark border border-secondary px-2 py-2">Gluc: {{ p.avg_glucose_level }}</span>
+                            </div>
                         </td>
                         <td>
                             {% if p.prediction == 1 %}
-                            <span class="badge bg-danger">Stroke Risk</span>
+                            <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2" style="background: rgba(220, 53, 69, 0.1);">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Stroke Risk
+                            </span>
                             {% else %}
-                            <span class="badge bg-success">No Risk</span>
+                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2" style="background: rgba(25, 135, 84, 0.1);">
+                                <i class="fas fa-check-circle me-1"></i>Low Risk
+                            </span>
                             {% endif %}
                         </td>
                         <td>
-                            <div class="fw-bold">{{ p.prob_percent|stringformat:".1f" }}%</div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bold me-2">{{ p.prob_percent|stringformat:".1f" }}%</div>
+                                <div class="progress w-100" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar {% if p.prediction == 1 %}bg-danger{% else %}bg-success{% endif %}" 
+                                         style="width: {{ p.prob_percent }}%"></div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
                         <td colspan="5" class="text-center py-5">
-                            <p class="text-muted">No prediction history found.</p>
-                            <a href="{% url 'predict' %}" class="btn btn-outline-primary btn-sm rounded-pill">Start your
-                                first prediction</a>
+                            <div class="mb-4 text-muted"><i class="fas fa-folder-open fa-3x"></i></div>
+                            <h5>No history found</h5>
+                            <p class="text-muted">Start your first health assessment to see data here.</p>
+                            <a href="{% url 'predict' %}" class="btn btn-outline-rose mt-3">Start Analysis</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -60,4 +80,15 @@
         </div>
     </div>
 </div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+        transition: background 0.3s;
+    }
+    .badge {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+</style>
 {% endblock %}

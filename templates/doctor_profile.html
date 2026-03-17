@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 py-5 animate-fade">
+    <div class="row g-4">
+        <!-- Sidebar Profile Card -->
+        <div class="col-lg-4">
+            <div class="glass-card p-5 text-center">
+                <div class="mb-4 position-relative d-inline-block">
+                    {% if doctor.profile_image %}
+                    <img src="{{ doctor.profile_image.url }}" class="rounded-circle shadow-lg" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid var(--primary-rose);">
+                    {% else %}
+                    <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-rose shadow-lg" style="width: 150px; height: 150px; border: 4px solid var(--glass-border); font-size: 4rem;">
+                        {% if doctor.user.last_name %}{{ doctor.user.last_name|slice:":1" }}{% else %}{{ doctor.user.username|slice:":1" }}{% endif %}
+                    </div>
+                    {% endif %}
+                    <span class="position-absolute bottom-0 end-0 bg-success rounded-circle border border-dark" style="width: 20px; height: 20px; border-width: 3px !important;"></span>
+                </div>
+                
+                <h3 class="fw-bold mb-1">Dr. {% if doctor.user.last_name %}{{ doctor.user.last_name }}{% else %}{{ doctor.user.username }}{% endif %}</h3>
+                <p class="text-rose fw-semibold mb-3">{{ doctor.specialization }}</p>
+                <p class="text-muted small mb-4"><i class="fas fa-hospital me-2"></i>{{ doctor.hospital }}</p>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'edit_doctor_profile' %}" class="btn btn-premium rounded-pill">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Mini Cards -->
+            <div class="row g-3 mt-2">
+                <div class="col-6">
+                    <div class="glass-card p-3 text-center">
+                        <div class="h4 fw-bold text-rose mb-0">{{ stats.total }}</div>
+                        <div class="small text-muted">Bookings</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="glass-card p-3 text-center">
+                        <div class="h4 fw-bold text-success mb-0">{{ stats.approved }}</div>
+                        <div class="small text-muted">Success</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <div class="glass-card p-5 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <h4 class="fw-bold mb-0">Clinical Information</h4>
+                    <span class="badge bg-success-subtle text-success border border-success px-3 py-2">Verified Professional</span>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 border-end border-secondary border-opacity-25">
+                        <div class="mb-4">
+                            <label class="small text-muted text-uppercase fw-bold mb-2">License Number</label>
+                            <p class="h5 fw-bold text-white">{{ doctor.license_number }}</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="small text-muted text-uppercase fw-bold mb-2">Primary Practice</label>
+                            <p class="h5 fw-bold text-white">{{ doctor.hospital }}</p>
+                        </div>
+                        <div class="mb-0">
+                            <label class="small text-muted text-uppercase fw-bold mb-2">Contact Number</label>
+                            <p class="h5 fw-bold text-white">{{ doctor.phone }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-md-4">
+                        <div class="mb-4">
+                            <label class="small text-muted text-uppercase fw-bold mb-2">Email Address</label>
+                            <p class="h5 fw-bold text-white">{{ doctor.user.email }}</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="small text-muted text-uppercase fw-bold mb-2">Specialization</label>
+                            <p class="h5 fw-bold text-white">{{ doctor.specialization }}</p>
+                        </div>
+                        <div class="mb-0">
+                            <label class="small text-muted text-uppercase fw-bold mb-2">Joined Network</label>
+                            <p class="h5 fw-bold text-white">{{ doctor.created_at|date:"F Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-4 border-top border-secondary border-opacity-25">
+                    <h5 class="fw-bold mb-4">Quick Actions</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="{% url 'doctor_dashboard' %}" class="card bg-transparent border-secondary border-opacity-50 p-3 text-decoration-none hover-lift">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-rose-subtle p-3 rounded-3 me-3" style="background: rgba(233, 30, 99, 0.1);">
+                                        <i class="fas fa-calendar-check text-rose"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 text-white">Pending Requests</h6>
+                                        <small class="text-muted">{{ stats.pending }} new appointments</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift { transition: transform 0.3s; }
+    .hover-lift:hover { transform: translateY(-5px); border-color: var(--primary-rose) !important; }
+</style>
+{% endblock %}
