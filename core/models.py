@@ -49,13 +49,19 @@ class DoctorProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Dr. {self.user.last_name or self.user.username} ({self.specialization})"
+        return f"Dr. {self.user.first_name} {self.user.last_name} ({self.specialization})"
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
+        ('Paid', 'Paid'),
+        ('Confirmed', 'Confirmed'),
         ('Rejected', 'Rejected'),
+    ]
+    PAYMENT_STATUS_CHOICES = [
+        ('Unpaid', 'Unpaid'),
+        ('Paid', 'Paid'),
     ]
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='doctor_appointments')
@@ -63,7 +69,19 @@ class Appointment(models.Model):
     time = models.TimeField()
     reason = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    consultation_fee = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Unpaid')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Appointment: {self.patient.username} with {self.doctor.user.last_name} on {self.date}"
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Message from {self.name} - {self.subject}"

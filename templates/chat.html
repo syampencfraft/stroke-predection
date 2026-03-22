@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="chat-page-wrapper">
+    <!-- Glass Sidebar -->
+    <aside class="chat-sidebar">
+        <div class="d-flex align-items-center mb-5">
+            <div class="chat-avatar-small me-3">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <h5 class="mb-0 text-white fw-bold">StrokeAI</h5>
+                <span class="text-success small"><i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> Active Now</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section mb-4">
+            <h6 class="text-muted small fw-bold text-uppercase mb-3 px-2">Health Topics</h6>
+            <div class="topic-tag" onclick="sendQuickMsg('Tell me about FAST signs')">
+                <i class="fas fa-bolt text-warning"></i> FAST Symptoms
+            </div>
+            <div class="topic-tag" onclick="sendQuickMsg('How to prevent stroke?')">
+                <i class="fas fa-shield-alt text-info"></i> Prevention Guide
+            </div>
+            <div class="topic-tag" onclick="sendQuickMsg('Diet for heart health')">
+                <i class="fas fa-apple-alt text-success"></i> Nutrition Tips
+            </div>
+            <div class="topic-tag" onclick="sendQuickMsg('What is a stroke?')">
+                <i class="fas fa-brain text-rose"></i> Brain Health
+            </div>
+        </div>
+
+        <div class="mt-auto">
+            <button class="btn btn-outline-rose w-100 rounded-pill py-2" onclick="location.reload()">
+                <i class="fas fa-plus me-2"></i> New Session
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-main">
+        <div class="chat-content-scroller" id="chat-scroller">
+            <div class="chat-message-container" id="chat-history">
+                <!-- Welcome Message -->
+                <div class="chat-block bot">
+                    <div class="chat-avatar-small">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="chat-text-wrapper">
+                        <div class="chat-bubble-premium">
+                            <h4 class="fw-bold mb-3">Welcome to StrokeAI Assistant</h4>
+                            <p>I am your specialized health companion. Whether you have questions about risks, symptoms, or preventive lifestyles, I'm here to provide evidence-based information.</p>
+                            <p class="mb-0">How can I assist your health journey today?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Input Area -->
+        <div class="chat-input-bar-container">
+            <div class="message-meta-info text-center mb-3" id="typing-indicator" style="display: none;">
+                <span class="typing-dot-premium"></span>
+                <span class="typing-dot-premium"></span>
+                <span class="typing-dot-premium"></span>
+                <span class="text-muted small ms-2 italic">Neural processing...</span>
+            </div>
+            
+            <form id="chat-page-form" class="chat-input-glass">
+                <input type="text" id="chat-page-input" placeholder="Ask about symptoms, prevention, or diet..." autocomplete="off">
+                <button type="submit" class="chat-page-send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+            
+            <div class="text-center mt-3">
+                <p class="text-muted" style="font-size: 0.75rem; opacity: 0.6;">
+                    <i class="fas fa-exclamation-triangle me-1"></i> 
+                    Educational purposes only. In case of emergency, contact your local medical services immediately.
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    /* Inline overrides for layout integration */
+    body { overflow: hidden; }
+    .navbar { position: fixed; width: 100%; z-index: 1050; }
+    
+    .italic { font-style: italic; }
+</style>
+
+<script src="{% static 'js/chat_page.js' %}"></script>
+{% endblock %}

@@ -15,10 +15,10 @@
                             {% if d.profile_image %}
                             <img src="{{ d.profile_image.url }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid var(--primary-rose);">
                             {% else %}
-                            <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 50px; height: 50px; border: 2px solid var(--glass-border);">{{ d.user.last_name|slice:":1" }}</div>
+                            <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 50px; height: 50px; border: 2px solid var(--glass-border);">{% if d.user.first_name %}{{ d.user.first_name|slice:":1" }}{% endif %}{% if d.user.last_name %}{{ d.user.last_name|slice:":1" }}{% elif not d.user.first_name %}{{ d.user.username|slice:":1" }}{% endif %}</div>
                             {% endif %}
                             <div>
-                                <h6 class="mb-0 fw-bold text-white">Dr. {% if d.user.last_name %}{{ d.user.last_name }}{% else %}{{ d.user.username }}{% endif %}</h6>
+                                <h6 class="mb-0 fw-bold text-white">Dr. {% if d.user.first_name or d.user.last_name %}{{ d.user.first_name }} {{ d.user.last_name }}{% else %}{{ d.user.username }}{% endif %}</h6>
                                 <p class="small text-muted mb-0" style="color: var(--primary-rose) !important;">{{ d.specialization }}</p>
                                 <a href="{% url 'view_doctor_profile' d.id %}" class="small text-rose text-decoration-none opacity-75">Select Profile</a>
                             </div>

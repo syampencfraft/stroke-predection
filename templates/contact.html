@@ -40,31 +40,27 @@
                     </div>
                     
                     <div class="col-md-7">
-                        <form id="contactForm">
+                        <form method="POST">
+                            {% csrf_token %}
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" placeholder="John Doe" required>
+                                    {{ form.name }}
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" placeholder="john@example.com" required>
+                                    {{ form.email }}
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Subject</label>
-                                    <select class="form-select">
-                                        <option>AI Model Inquiry</option>
-                                        <option>Clinical Partnering</option>
-                                        <option>Technical Support</option>
-                                        <option>Other</option>
-                                    </select>
+                                    {{ form.subject }}
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Message</label>
-                                    <textarea class="form-control" rows="5" placeholder="Your message here..." required></textarea>
+                                    {{ form.message }}
                                 </div>
                                 <div class="col-12 mt-4">
-                                    <button type="button" class="btn btn-premium w-100 py-3">
+                                    <button type="submit" class="btn btn-premium w-100 py-3">
                                         <i class="fas fa-paper-plane me-2"></i>Send Message
                                     </button>
                                 </div>

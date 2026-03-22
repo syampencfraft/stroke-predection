@@ -1,7 +1,7 @@
 from django import forms
 import datetime
 from django.contrib.auth.models import User
-from .models import UserProfile, DoctorProfile, Appointment
+from .models import UserProfile, DoctorProfile, Appointment, ContactMessage
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control rounded-pill', 'placeholder': 'Password', 'required': 'required', 'minlength': '8'}))
@@ -78,10 +78,27 @@ class AppointmentForm(forms.ModelForm):
         doctor_qs = DoctorProfile.objects.filter(is_verified=True)
         self.fields['doctor'].queryset = doctor_qs
         # Display both Name and Specialization for clear identification
-        self.fields['doctor'].label_from_instance = lambda obj: f"Dr. {obj.user.last_name or obj.user.username} — {obj.specialization}"
+        self.fields['doctor'].label_from_instance = lambda obj: f"Dr. {(obj.user.first_name + ' ' + obj.user.last_name).strip() or obj.user.username} — {obj.specialization}"
 
     def clean_date(self):
         appointment_date = self.cleaned_data.get('date')
         if appointment_date < datetime.date.today():
             raise forms.ValidationError("You cannot book an appointment for a past date.")
         return appointment_date
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['name', 'email', 'subject', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'John Doe'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'john@example.com'}),
+            'subject': forms.Select(attrs={'class': 'form-select'}, choices=[
+                ('', 'Select Subject'),
+                ('AI Model Inquiry', 'AI Model Inquiry'),
+                ('Clinical Partnering', 'Clinical Partnering'),
+                ('Technical Support', 'Technical Support'),
+                ('Other', 'Other')
+            ]),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Your message here...', 'rows': 5}),
+        }

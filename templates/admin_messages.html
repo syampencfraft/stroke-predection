@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-section text-center">
+    <div class="container animate-fade">
+        <h1 class="hero-title">Contact Messages</h1>
+        <p class="lead mb-5 text-muted mx-auto" style="max-width: 800px;">
+            Review and manage inquiries from users and partners.
+        </p>
+    </div>
+</section>
+
+<div class="container my-5 py-5">
+    <div class="glass-card p-4 animate-fade">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="color: white;">
+                <thead>
+                    <tr style="border-bottom: 2px solid rgba(255, 255, 255, 0.1);">
+                        <th class="ps-4">Sender</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Received At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for msg in contact_messages %}
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-rose-transparent p-2 rounded-circle me-3" style="background: rgba(233, 30, 99, 0.1);">
+                                    <i class="fas fa-user text-rose" style="color: var(--primary-rose);"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">{{ msg.name }}</h6>
+                                    <small class="text-muted">{{ msg.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-rose-transparent text-rose" style="background: rgba(233, 30, 99, 0.1); color: var(--primary-rose);">
+                                {{ msg.subject }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="text-muted small" style="max-width: 300px; white-space: normal;">
+                                {{ msg.message }}
+                            </div>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ msg.created_at|date:"M d, Y H:i" }}</small>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                            No messages found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 600px;">
+
+    <!-- Header -->
+    <div class="mb-5 text-center">
+        <div class="mb-3 d-inline-flex align-items-center justify-content-center rounded-circle shadow"
+             style="width: 64px; height: 64px; background: #667eea; color: white;">
+            <i class="fas fa-lock fs-5"></i>
+        </div>
+        <h2 class="fw-bold mb-1 text-white">Secure Payment</h2>
+        <p class="text-muted small">Enter your details to confirm the appointment</p>
+    </div>
+
+    <!-- Summary -->
+    <div class="card mb-4 border-0 shadow-sm" style="background: rgba(255,255,255,0.05); border-radius: 15px;">
+        <div class="card-body p-4 text-white">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="small opacity-75">Consultation Fee</span>
+                <span class="h4 fw-bold mb-0 text-rose">₹{{ appointment.consultation_fee }}</span>
+            </div>
+            <div class="small opacity-50 border-top pt-3 mt-3">
+                Appointment with <strong>Dr. {{ appointment.doctor.user.username }}</strong> on {{ appointment.date|date:"d M Y" }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="card border-0 shadow-lg" style="background: rgba(255,255,255,0.08); border-radius: 20px;">
+        <div class="card-body p-4">
+            <form method="POST" action="{% url 'pay_appointment' appointment.pk %}" id="mainPaymentForm">
+                {% csrf_token %}
+                
+                <!-- Pills -->
+                <ul class="nav nav-pills mb-4 justify-content-center bg-dark p-1 rounded-pill" style="width: fit-content; margin: 0 auto;">
+                    <li class="nav-item">
+                        <button class="nav-link active px-4 rounded-pill" data-bs-toggle="pill" data-bs-target="#tab-card" type="button" id="pill-card">Card</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link px-4 rounded-pill" data-bs-toggle="pill" data-bs-target="#tab-upi" type="button" id="pill-upi">UPI / GPay</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- CARD -->
+                    <div class="tab-pane fade show active" id="tab-card">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Card Number</label>
+                            <input type="text" class="form-control" id="f-cnum" placeholder="0000 0000 0000 0000" maxlength="19" oninput="this.value = this.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim()">
+                            <div class="text-danger small mt-1" id="err-num"></div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Expiry (MM/YY)</label>
+                                <input type="text" class="form-control" id="f-cexp" placeholder="MM/YY" maxlength="5" oninput="let v = this.value.replace(/\D/g,''); if(v.length>2) v = v.slice(0,2)+'/'+v.slice(2,4); this.value = v;">
+                                <div class="text-danger small mt-1" id="err-exp"></div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small text-muted">CVV</label>
+                                <input type="password" class="form-control" id="f-ccvv" placeholder="•••" maxlength="3">
+                                <div class="text-danger small mt-1" id="err-cvv"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- UPI -->
+                    <div class="tab-pane fade" id="tab-upi">
+                        <div class="btn-group w-100 mb-4">
+                            <button type="button" class="btn btn-outline-light active" id="sel-upi" onclick="switchMethod('upi')">UPI ID</button>
+                            <button type="button" class="btn btn-outline-light" id="sel-gpay" onclick="switchMethod('gpay')">GPay</button>
+                        </div>
+                        <input type="hidden" name="upi_method" id="v-meth" value="upi">
+
+                        <div id="box-upi">
+                            <input type="text" class="form-control" id="f-upi" placeholder="name@upi">
+                            <div class="text-danger small mt-1" id="err-upi"></div>
+                        </div>
+                        <div id="box-gpay" style="display:none;">
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-white">+91</span>
+                                <input type="text" class="form-control" id="f-gpay" placeholder="9876543210" maxlength="10">
+                            </div>
+                            <div class="text-danger small mt-1" id="err-gpay"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBMIT -->
+                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill mt-5 py-3 fw-bold shadow" id="btnSubmit">
+                    Pay ₹{{ appointment.consultation_fee }} &amp; Confirm
+                </button>
+                <div class="text-center mt-3 small text-muted">Validated Secure Transaction</div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'my_appointments' %}" class="text-muted small text-decoration-none"><i class="fas fa-chevron-left me-1"></i>Back</a>
+    </div>
+</div>
+
+<style>
+    .form-control { background: rgba(255,255,255,0.06) !important; color: white !important; border: 1px solid rgba(255,255,255,0.1) !important; padding: 12px; }
+    .nav-pills .nav-link.active { background: #667eea !important; }
+    .btn-outline-light.active { background: white !important; color: black !important; }
+    body { background: #050505 !important; color: white !important; }
+    .text-rose { color: #e91e63 !important; }
+</style>
+
+<script>
+let activeTab = 'card';
+document.getElementById('pill-card').onclick = () => activeTab = 'card';
+document.getElementById('pill-upi').onclick = () => activeTab = 'upi';
+
+function switchMethod(m) {
+    document.getElementById('v-meth').value = m;
+    document.getElementById('sel-upi').classList.toggle('active', m === 'upi');
+    document.getElementById('sel-gpay').classList.toggle('active', m === 'gpay');
+    document.getElementById('box-upi').style.display = (m === 'upi' ? 'block' : 'none');
+    document.getElementById('box-gpay').style.display = (m === 'gpay' ? 'block' : 'none');
+}
+
+document.getElementById('mainPaymentForm').onsubmit = function(e) {
+    e.preventDefault();
+    let hasErr = false;
+    document.querySelectorAll('.text-danger').forEach(el => el.innerText = '');
+
+    if (activeTab === 'card') {
+        if (document.getElementById('f-cnum').value.replace(/\s/g, '').length !== 16) { document.getElementById('err-num').innerText = 'Enter 16 digits'; hasErr = true; }
+        if (document.getElementById('f-cexp').value.length < 5) { document.getElementById('err-exp').innerText = 'Use MM/YY'; hasErr = true; }
+        if (document.getElementById('f-ccvv').value.length !== 3) { document.getElementById('err-cvv').innerText = 'Enter 3 digits'; hasErr = true; }
+    } else {
+        const m = document.getElementById('v-meth').value;
+        if (m === 'upi' && !document.getElementById('f-upi').value.includes('@')) { document.getElementById('err-upi').innerText = 'Enter valid UPI ID'; hasErr = true; }
+        if (m === 'gpay' && document.getElementById('f-gpay').value.length !== 10) { document.getElementById('err-gpay').innerText = 'Enter 10 digits'; hasErr = true; }
+    }
+
+    if (!hasErr) {
+        const b = document.getElementById('btnSubmit');
+        b.disabled = true;
+        b.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+        setTimeout(() => this.submit(), 1000);
+    }
+}
+</script>
+{% endblock %}

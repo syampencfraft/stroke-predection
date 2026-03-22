@@ -4,11 +4,12 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
 import joblib
 import pandas as pd
 import os
-from .models import PredictionHistory, UserProfile, DoctorProfile, Appointment
-from .forms import UserRegistrationForm, UserProfileForm, DoctorRegistrationForm, DoctorProfileForm, AppointmentForm
+from .models import PredictionHistory, UserProfile, DoctorProfile, Appointment, ContactMessage
+from .forms import UserRegistrationForm, UserProfileForm, DoctorRegistrationForm, DoctorProfileForm, AppointmentForm, ContactForm
 
 # Load the model and components
 MODEL_PATH = os.path.join('data', 'best_stroke_model.pkl')
@@ -227,7 +228,20 @@ def about(request):
     return render(request, 'about.html')
 
 def contact(request):
-    return render(request, 'contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your message has been sent successfully! We will get back to you soon.")
+            return redirect('contact')
+    else:
+        form = ContactForm()
+    return render(request, 'contact.html', {'form': form})
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_messages(request):
+    contact_messages = ContactMessage.objects.all().order_by('-created_at')
+    return render(request, 'admin_messages.html', {'contact_messages': contact_messages})
 
 def doctor_register(request):
     if request.method == 'POST':
@@ -310,14 +324,109 @@ def handle_appointment(request, pk, action):
     # Security: check if the doctor owns this appointment
     if not hasattr(request.user, 'doctorprofile') or appointment.doctor != request.user.doctorprofile:
         return redirect('home')
-    
+
     if action == 'approve':
-        appointment.status = 'Approved'
+        if request.method == 'POST':
+            fee = request.POST.get('consultation_fee')
+            try:
+                fee = float(fee)
+                if fee < 0:
+                    raise ValueError
+            except (TypeError, ValueError):
+                messages.error(request, 'Please enter a valid consultation fee.')
+                return redirect('doctor_dashboard')
+            appointment.status = 'Approved'
+            appointment.consultation_fee = fee
+            appointment.payment_status = 'Unpaid'
+            appointment.save()
+        else:
+            # GET – redirect back; approve requires a POST with fee
+            return redirect('doctor_dashboard')
+    elif action == 'confirm':
+        # Final step after payment
+        if appointment.status == 'Paid':
+            appointment.status = 'Confirmed'
+            appointment.save()
+            messages.success(request, 'Appointment successfully confirmed!')
+        else:
+            messages.warning(request, 'This appointment is not ready for final confirmation.')
     elif action == 'reject':
         appointment.status = 'Rejected'
-    
-    appointment.save()
+        appointment.save()
+
     return redirect('doctor_dashboard')
+
+
+@login_required
+def pay_appointment(request, pk):
+    """Allow a patient to pay for an approved appointment."""
+    appointment = get_object_or_404(Appointment, pk=pk, patient=request.user)
+
+    # Only Approved + Unpaid appointments can be paid
+    if appointment.status != 'Approved' or appointment.payment_status != 'Unpaid':
+        messages.warning(request, 'This appointment is not awaiting payment.')
+        return redirect('my_appointments')
+
+    if request.method == 'POST':
+        # Simulated payment — mark as paid and trigger first step of confirmation
+        appointment.payment_status = 'Paid'
+        appointment.status = 'Paid'  # Move to Paid status (awaiting final confirm)
+        appointment.save()
+        messages.success(request, 'Payment successful! Your appointment is now awaiting final doctor confirmation.')
+        return redirect('my_appointments')
+
+    return render(request, 'pay_appointment.html', {'appointment': appointment})
+
+@login_required
+def chat_page(request):
+    return render(request, 'chat.html')
+
+@login_required
+@csrf_exempt
+def chatbot_response(request):
+    if request.method == 'POST':
+        import json
+        try:
+            data = json.loads(request.body)
+            user_msg = data.get('message', '').lower()
+            
+            # Smart Knowledge Base Logic
+            response = "I'm sorry, I don't have specific information on that. You can ask me about **Stroke symptoms (FAST)**, **prevention**, or **diet**!"
+            
+            if any(w in user_msg for w in ['hi', 'hello', 'hey', 'start']):
+                response = "Hello! I'm your StrokeAI Assistant. How can I help you? I can tell you about stroke signs, prevention, or help navigate the app."
+            
+            elif any(w in user_msg for w in ['symptom', 'sign', 'fast', 'identify']):
+                response = "Remember the **F.A.S.T.** acronym to identify a stroke:\n\n" \
+                           "• **Face**: Does one side of the face droop?\n" \
+                           "• **Arms**: Does one arm drift downward when raised?\n" \
+                           "• **Speech**: Is speech slurred or strange?\n" \
+                           "• **Time**: If any of these are present, call emergency services immediately!"
+            
+            elif any(w in user_msg for w in ['prevent', 'risk', 'avoid', 'health']):
+                response = "Stroke prevention starts with healthy habits:\n\n" \
+                           "• **Blood Pressure**: Keep it in the healthy range.\n" \
+                           "• **Diet**: Reduce salt and saturated fats.\n" \
+                           "• **Exercise**: Aim for 30 mins of activity daily.\n" \
+                           "• **Smoking**: Quitting significantly reduces risk."
+            
+            elif any(w in user_msg for w in ['diet', 'eat', 'food', 'nutrition']):
+                response = "A heart-healthy diet helps prevent strokes:\n\n" \
+                           "• Eat more fruits and vegetables.\n" \
+                           "• Choose whole grains over refined ones.\n" \
+                           "• Opt for lean proteins like fish and poultry.\n" \
+                           "• Limit salt to help manage blood pressure."
+            
+            elif any(w in user_msg for w in ['cause', 'what is', 'define', 'stroke']):
+                response = "A stroke occurs when the blood supply to part of your brain is interrupted or reduced, preventing brain tissue from getting oxygen and nutrients. Brain cells begin to die in minutes."
+                
+            elif any(w in user_msg for w in ['thanks', 'thank you', 'ok', 'good']):
+                response = "You're welcome! Stay healthy and feel free to ask more questions anytime."
+
+            return JsonResponse({'response': response})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
 def doctor_profile(request):

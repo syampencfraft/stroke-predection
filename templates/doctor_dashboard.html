@@ -18,11 +18,24 @@
         </div>
         <div class="col-md-4">
             <div class="glass-card p-4 text-center">
-                <div class="display-6 fw-bold text-success">{% with appointments|dictsort:"status" as sorted %}{% for a in sorted %}{% if a.status == 'Approved' %}{{ forloop.revcounter }}{% endif %}{% endfor %}{% endwith %}</div>
-                <div class="text-muted small text-uppercase">Approved</div>
+                <div class="display-6 fw-bold text-success">
+                    {{ appointments|length }}
+                </div>
+                <div class="text-muted small text-uppercase">Total Appointments</div>
             </div>
         </div>
     </div>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <h4 class="fw-bold mb-4">Patient Appointments</h4>
     <div class="glass-card overflow-hidden">
@@ -30,11 +43,13 @@
             <table class="table table-hover align-middle mb-0" style="color: #000000;">
                 <thead style="background: rgba(255, 255, 255, 0.05);">
                     <tr>
-                        <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">PATIENT</th>
-                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">DATE & TIME</th>
-                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">REASON</th>
-                        <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">STATUS</th>
-                        <th class="py-3 border-secondary text-rose text-end pe-4" style="color: var(--primary-rose);">ACTIONS</th>
+                        <th class="ps-4 py-3 border-secondary" style="color: var(--primary-rose);">PATIENT</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">DATE &amp; TIME</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">REASON</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">STATUS</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">FEE (₹)</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">PAYMENT</th>
+                        <th class="py-3 border-secondary text-end pe-4" style="color: var(--primary-rose);">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -52,29 +67,107 @@
                             <div class="text-dark small" style="max-width: 200px;">{{ a.reason|truncatechars:50 }}</div>
                         </td>
                         <td>
-                            {% if a.status == 'Approved' %}
-                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2" style="background: rgba(25, 135, 84, 0.1);">Approved</span>
+                            {% if a.status == 'Confirmed' %}
+                            <span class="badge px-3 py-2" style="background: rgba(13, 110, 253, 0.12); color: #0d6efd; border: 1px solid #0d6efd;">Confirmed</span>
+                            {% elif a.status == 'Paid' %}
+                            <span class="badge px-3 py-2" style="background: rgba(25, 135, 84, 0.12); color: #198754; border: 1px solid #198754;">Paid (Awaiting Confirm)</span>
+                            {% elif a.status == 'Approved' %}
+                            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2" style="background: rgba(255, 193, 7, 0.1);">Awaiting Payment</span>
                             {% elif a.status == 'Rejected' %}
                             <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2" style="background: rgba(220, 53, 69, 0.1);">Rejected</span>
                             {% else %}
                             <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2" style="background: rgba(255, 193, 7, 0.1);">Pending</span>
                             {% endif %}
                         </td>
+                        <td>
+                            {% if a.consultation_fee %}
+                            <span class="fw-bold text-dark">₹{{ a.consultation_fee }}</span>
+                            {% else %}
+                            <span class="text-muted small">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if a.status == 'Confirmed' %}
+                            <span class="badge px-3 py-2" style="background: rgba(13, 110, 253, 0.12); color: #0d6efd; border: 1px solid #0d6efd;"><i class="fas fa-check-circle me-1"></i>Finalized</span>
+                            {% elif a.status == 'Paid' %}
+                            <span class="badge px-3 py-2" style="background: rgba(25, 135, 84, 0.12); color: #198754; border: 1px solid #198754;"><i class="fas fa-check me-1"></i>Received</span>
+                            {% elif a.status == 'Approved' %}
+                            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2">Waiting for Patient</span>
+                            {% else %}
+                            <span class="text-muted small">—</span>
+                            {% endif %}
+                        </td>
                         <td class="text-end pe-4">
                             {% if a.status == 'Pending' %}
-                            <a href="{% url 'handle_appointment' a.pk 'approve' %}" class="btn btn-success btn-sm rounded-pill px-3 me-2">Approve</a>
+                            <button type="button" class="btn btn-success btn-sm rounded-pill px-3 me-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#approveModal{{ a.pk }}">
+                                Set Fee
+                            </button>
                             <a href="{% url 'handle_appointment' a.pk 'reject' %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">Reject</a>
+                            {% elif a.status == 'Paid' %}
+                            <a href="{% url 'handle_appointment' a.pk 'confirm' %}" class="btn btn-primary btn-sm rounded-pill px-3">
+                                <i class="fas fa-check-circle me-1"></i>Final Confirm
+                            </a>
                             {% else %}
-                            <span class="text-dark small opacity-75">Processed</span>
+                            <span class="text-dark small opacity-75">Completed</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="5" class="text-center py-5 text-muted">No appointments found.</td></tr>
+                    <tr><td colspan="7" class="text-center py-5 text-muted">No appointments found.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+
+    </div>
 </div>
+
+<!-- Modals (Placed at top level of content block to avoid stacking context issues from animations) -->
+{% for a in appointments %}
+{% if a.status == 'Pending' %}
+<div class="modal fade" id="approveModal{{ a.pk }}" aria-labelledby="approveModalLabel{{ a.pk }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 24px; background: #1a1a1a; color: white;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="approveModalLabel{{ a.pk }}">
+                        <i class="fas fa-hand-holding-usd me-2 text-rose"></i>Set Consultation Fee
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="text-muted small mb-4">
+                        Approving appointment for <strong>{{ a.patient.username }}</strong>. Enter the fee to be paid by the patient.
+                    </p>
+                    <form method="POST" action="{% url 'handle_appointment' a.pk 'approve' %}">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Consultation Fee (₹) <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-dark border-secondary text-white" style="border-radius: 12px 0 0 12px; border-right: none;">₹</span>
+                                <input type="number" name="consultation_fee" class="form-control"
+                                       style="border-radius: 0 12px 12px 0;"
+                                       placeholder="e.g. 500" min="0" step="0.01" required id="feeInput{{ a.pk }}">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-premium rounded-pill px-4">
+                                <i class="fas fa-check-circle me-1"></i>Approve &amp; Set Fee
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('approveModal{{ a.pk }}').addEventListener('shown.bs.modal', function () {
+            document.getElementById('feeInput{{ a.pk }}').focus();
+        });
+    </script>
+    {% endif %}
+{% endfor %}
 {% endblock %}
