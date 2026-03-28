@@ -12,7 +12,7 @@
     <div class="row g-4 mb-5">
         <div class="col-md-4">
             <div class="glass-card p-4 text-center">
-                <div class="display-6 fw-bold text-rose">{{ appointments.count }}</div>
+                <div class="display-6 fw-bold text-accent">{{ appointments.count }}</div>
                 <div class="text-muted small text-uppercase">Total Requests</div>
             </div>
         </div>
@@ -43,13 +43,13 @@
             <table class="table table-hover align-middle mb-0" style="color: #000000;">
                 <thead style="background: rgba(255, 255, 255, 0.05);">
                     <tr>
-                        <th class="ps-4 py-3 border-secondary" style="color: var(--primary-rose);">PATIENT</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">DATE &amp; TIME</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">REASON</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">STATUS</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">FEE (₹)</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">PAYMENT</th>
-                        <th class="py-3 border-secondary text-end pe-4" style="color: var(--primary-rose);">ACTIONS</th>
+                        <th class="ps-4 py-3 border-secondary" style="color: var(--primary-accent);">PATIENT</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">DATE &amp; TIME</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">REASON</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">STATUS</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">FEE (₹)</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">PAYMENT</th>
+                        <th class="py-3 border-secondary text-end pe-4" style="color: var(--primary-accent);">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -133,7 +133,7 @@
             <div class="modal-content shadow-lg border-0" style="border-radius: 24px; background: #1a1a1a; color: white;">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold" id="approveModalLabel{{ a.pk }}">
-                        <i class="fas fa-hand-holding-usd me-2 text-rose"></i>Set Consultation Fee
+                        <i class="fas fa-hand-holding-usd me-2 text-accent"></i>Set Consultation Fee
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

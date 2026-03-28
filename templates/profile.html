@@ -6,20 +6,20 @@
         <div class="col-md-9 col-lg-8">
             <div class="glass-card p-5 animate-fade overflow-hidden position-relative">
                  <!-- Background Glow -->
-                 <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(233, 30, 99, 0.05); border-radius: 50%; filter: blur(50px);"></div>
+                 <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(0, 229, 255, 0.05); border-radius: 50%; filter: blur(50px);"></div>
 
                 <div class="text-center mb-5">
                     <div class="position-relative d-inline-block mb-4">
                         {% if user.userprofile.profile_image %}
                         <img src="{{ user.userprofile.profile_image.url }}" alt="Profile" class="rounded-circle"
-                            style="width: 160px; height: 160px; object-fit: cover; border: 4px solid var(--primary-rose); box-shadow: 0 0 30px rgba(233, 30, 99, 0.2);">
+                            style="width: 160px; height: 160px; object-fit: cover; border: 4px solid var(--primary-accent); box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);">
                         {% else %}
-                        <div class="bg-rose-transparent text-rose rounded-circle d-inline-flex align-items-center justify-content-center"
-                            style="width: 160px; height: 160px; font-size: 5rem; background: rgba(233, 30, 99, 0.1); border: 4px solid var(--primary-rose);">
+                        <div class="bg-accent-transparent text-accent rounded-circle d-inline-flex align-items-center justify-content-center"
+                            style="width: 160px; height: 160px; font-size: 5rem; background: rgba(0, 229, 255, 0.1); border: 4px solid var(--primary-accent);">
                             {{ user.username|slice:":1"|upper }}
                         </div>
                         {% endif %}
-                        <div class="position-absolute bottom-0 start-50 translate-middle-x bg-rose px-3 py-1 rounded-pill small fw-bold text-white shadow" style="background: var(--primary-rose); transform: translateY(50%);">
+                        <div class="position-absolute bottom-0 start-50 translate-middle-x bg-accent px-3 py-1 rounded-pill small fw-bold text-white shadow" style="background: var(--primary-accent); transform: translateY(50%);">
                             PREMIUM MEMBER
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                 <form method="POST" enctype="multipart/form-data" class="row g-4">
                     {% csrf_token %}
                     <div class="col-12">
-                        <h5 class="text-rose mb-3" style="color: var(--primary-rose);"><i class="fas fa-edit me-2"></i>Update Personal Information</h5>
+                        <h5 class="text-accent mb-3" style="color: var(--primary-accent);"><i class="fas fa-edit me-2"></i>Update Personal Information</h5>
                     </div>
                     
                     <div class="col-12">
@@ -100,9 +100,9 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     input:focus, select:focus {
-        border-color: var(--primary-rose) !important;
+        border-color: var(--primary-accent) !important;
         outline: none;
-        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
         background: rgba(255, 255, 255, 0.04) !important;
     }
     input[type="file"] {

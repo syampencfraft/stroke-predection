@@ -4,13 +4,13 @@
 {% block content %}
 <section class="hero-section text-center">
     <div class="container animate-fade">
-        <span class="badge rounded-pill bg-rose-transparent mb-3 px-3 py-2 text-rose" style="background: rgba(233, 30, 99, 0.1); color: var(--primary-rose);">AI-POWERED DIAGNOSTICS</span>
+        <span class="badge rounded-pill bg-accent-transparent mb-3 px-3 py-2 text-accent" style="background: rgba(0, 229, 255, 0.1); color: var(--primary-accent);">AI-POWERED DIAGNOSTICS</span>
         <h1 class="hero-title">Advanced Stroke Risk Analysis</h1>
         <p class="lead mb-5 fs-4 text-muted mx-auto" style="max-width: 800px;">
             Harnessing the power of high-precision machine learning to analyze clinical parameters and provide instant, accurate stroke likelihood assessments.
         </p>
         <div class="d-flex justify-content-center gap-4">
-            <a href="{% url 'predict' %}" class="btn btn-premium btn-lg">
+            <a href="{% url 'predict' %}" class="btn btn-premium btn-lg pulse-glow">
                 <i class="fas fa-stethoscope me-2"></i>Analyze Now
             </a>
             <a href="{% url 'history' %}" class="btn btn-outline-rose btn-lg">
@@ -24,21 +24,21 @@
     <div class="row text-center g-4 animate-fade" style="animation-delay: 0.2s;">
         <div class="col-md-4">
             <div class="glass-card p-5 h-100">
-                <div class="text-rose mb-4" style="color: var(--primary-rose);"><i class="fas fa-brain fa-3x"></i></div>
+                <div class="text-accent mb-4" style="color: var(--primary-accent);"><i class="fas fa-brain fa-3x floating-icon" style="display: inline-block;"></i></div>
                 <h4 class="fw-bold mb-3">Ensemble Intelligence</h4>
                 <p class="text-muted">Utilizing Random Forest and Bagging classifiers to ensure stability and high accuracy across diverse data points.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="glass-card p-5 h-100">
-                <div class="text-rose mb-4" style="color: var(--primary-rose);"><i class="fas fa-chart-line fa-3x"></i></div>
+                <div class="text-accent mb-4" style="color: var(--primary-accent);"><i class="fas fa-chart-line fa-3x floating-icon" style="display: inline-block; animation-delay: 0.5s;"></i></div>
                 <h4 class="fw-bold mb-3">Real-time Insights</h4>
                 <p class="text-muted">Get immediate feedback based on clinical history, lifestyle factors, and physiological measurements.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="glass-card p-5 h-100">
-                <div class="text-rose mb-4" style="color: var(--primary-rose);"><i class="fas fa-shield-alt fa-3x"></i></div>
+                <div class="text-accent mb-4" style="color: var(--primary-accent);"><i class="fas fa-shield-alt fa-3x floating-icon" style="display: inline-block; animation-delay: 1s;"></i></div>
                 <h4 class="fw-bold mb-3">Balanced Accuracy</h4>
                 <p class="text-muted">Advanced SMOTE techniques prevent bias, ensuring reliable predictions even for critical minority cases.</p>
             </div>
@@ -48,7 +48,7 @@
 
 <section class="container my-5 py-5 text-center">
     <div class="glass-card p-5 animate-fade" style="animation-delay: 0.4s; overflow: hidden; position: relative;">
-        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(233, 30, 99, 0.1); border-radius: 50%; filter: blur(50px);"></div>
+        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(0, 229, 255, 0.1); border-radius: 50%; filter: blur(50px);"></div>
         <h2 class="fw-bold mb-4">Why Early Detection Matters?</h2>
         <p class="text-muted mx-auto mb-5" style="max-width: 700px;">
             Stroke remains a leading cause of disability worldwide. Identifying risk factors early through AI can be the first step towards preventive healthcare.
@@ -56,21 +56,21 @@
         <div class="row text-start g-4">
             <div class="col-md-6">
                 <div class="d-flex align-items-center mb-3">
-                    <div class="bg-rose-transparent p-2 rounded-circle me-3" style="background: rgba(233, 30, 99, 0.1);"><i class="fas fa-check" style="color: var(--primary-rose);"></i></div>
+                    <div class="bg-accent-transparent p-2 rounded-circle me-3" style="background: rgba(0, 229, 255, 0.1);"><i class="fas fa-check" style="color: var(--primary-accent);"></i></div>
                     <span class="text-white">94% Prediction Precision</span>
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="bg-rose-transparent p-2 rounded-circle me-3" style="background: rgba(233, 30, 99, 0.1);"><i class="fas fa-check" style="color: var(--primary-rose);"></i></div>
+                    <div class="bg-accent-transparent p-2 rounded-circle me-3" style="background: rgba(0, 229, 255, 0.1);"><i class="fas fa-check" style="color: var(--primary-accent);"></i></div>
                     <span class="text-white">Secure Data Handling</span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="d-flex align-items-center mb-3">
-                    <div class="bg-rose-transparent p-2 rounded-circle me-3" style="background: rgba(233, 30, 99, 0.1);"><i class="fas fa-check" style="color: var(--primary-rose);"></i></div>
+                    <div class="bg-accent-transparent p-2 rounded-circle me-3" style="background: rgba(0, 229, 255, 0.1);"><i class="fas fa-check" style="color: var(--primary-accent);"></i></div>
                     <span class="text-white">Interactive Health Dashboard</span>
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="bg-rose-transparent p-2 rounded-circle me-3" style="background: rgba(233, 30, 99, 0.1);"><i class="fas fa-check" style="color: var(--primary-rose);"></i></div>
+                    <div class="bg-accent-transparent p-2 rounded-circle me-3" style="background: rgba(0, 229, 255, 0.1);"><i class="fas fa-check" style="color: var(--primary-accent);"></i></div>
                     <span class="text-white">Professional Clinical Standards</span>
                 </div>
             </div>

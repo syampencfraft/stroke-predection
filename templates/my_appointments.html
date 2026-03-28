@@ -28,12 +28,12 @@
             <table class="table table-hover align-middle mb-0" style="color: #000000;">
                 <thead style="background: rgba(255, 255, 255, 0.05);">
                     <tr>
-                        <th class="ps-4 py-3 border-secondary" style="color: var(--primary-rose);">DOCTOR</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">DATE &amp; TIME</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">REASON</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">STATUS</th>
-                        <th class="py-3 border-secondary" style="color: var(--primary-rose);">FEE (₹)</th>
-                        <th class="py-3 border-secondary text-end pe-4" style="color: var(--primary-rose);">PAYMENT</th>
+                        <th class="ps-4 py-3 border-secondary" style="color: var(--primary-accent);">DOCTOR</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">DATE &amp; TIME</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">REASON</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">STATUS</th>
+                        <th class="py-3 border-secondary" style="color: var(--primary-accent);">FEE (₹)</th>
+                        <th class="py-3 border-secondary text-end pe-4" style="color: var(--primary-accent);">PAYMENT</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -41,10 +41,10 @@
                     <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                         <td class="ps-4 py-4">
                             <div class="d-flex align-items-center">
-                                <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 35px; height: 35px; border: 1px solid var(--glass-border);">{{ a.doctor.user.last_name|slice:":1" }}</div>
+                                <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-accent fw-bold" style="width: 35px; height: 35px; border: 1px solid var(--glass-border);">{{ a.doctor.user.last_name|slice:":1" }}</div>
                                 <div>
                                     <div class="fw-bold text-dark">Dr. {% if a.doctor.user.last_name %}{{ a.doctor.user.last_name }}{% else %}{{ a.doctor.user.username }}{% endif %}</div>
-                                    <div class="small text-rose text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem; color: var(--primary-rose);">{{ a.doctor.specialization }}</div>
+                                    <div class="small text-accent text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem; color: var(--primary-accent);">{{ a.doctor.specialization }}</div>
                                 </div>
                             </div>
                         </td>

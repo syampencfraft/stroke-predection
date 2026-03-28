@@ -6,21 +6,21 @@
     <div class="row g-5">
         <!-- Sidebar / Doctor List -->
         <div class="col-lg-4">
-            <h4 class="fw-bold mb-4 text-rose" style="color: var(--primary-rose);">Verified Practitioners</h4>
+            <h4 class="fw-bold mb-4 text-accent" style="color: var(--primary-accent);">Verified Practitioners</h4>
             <div class="glass-card p-3">
                 <div class="list-group list-group-flush bg-transparent">
                     {% for d in doctors %}
                     <div class="list-group-item bg-transparent border-secondary py-3 px-0">
                         <div class="d-flex align-items-center">
                             {% if d.profile_image %}
-                            <img src="{{ d.profile_image.url }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid var(--primary-rose);">
+                            <img src="{{ d.profile_image.url }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid var(--primary-accent);">
                             {% else %}
-                            <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 50px; height: 50px; border: 2px solid var(--glass-border);">{% if d.user.first_name %}{{ d.user.first_name|slice:":1" }}{% endif %}{% if d.user.last_name %}{{ d.user.last_name|slice:":1" }}{% elif not d.user.first_name %}{{ d.user.username|slice:":1" }}{% endif %}</div>
+                            <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-accent fw-bold" style="width: 50px; height: 50px; border: 2px solid var(--glass-border);">{% if d.user.first_name %}{{ d.user.first_name|slice:":1" }}{% endif %}{% if d.user.last_name %}{{ d.user.last_name|slice:":1" }}{% elif not d.user.first_name %}{{ d.user.username|slice:":1" }}{% endif %}</div>
                             {% endif %}
                             <div>
                                 <h6 class="mb-0 fw-bold text-white">Dr. {% if d.user.first_name or d.user.last_name %}{{ d.user.first_name }} {{ d.user.last_name }}{% else %}{{ d.user.username }}{% endif %}</h6>
-                                <p class="small text-muted mb-0" style="color: var(--primary-rose) !important;">{{ d.specialization }}</p>
-                                <a href="{% url 'view_doctor_profile' d.id %}" class="small text-rose text-decoration-none opacity-75">Select Profile</a>
+                                <p class="small text-muted mb-0" style="color: var(--primary-accent) !important;">{{ d.specialization }}</p>
+                                <a href="{% url 'view_doctor_profile' d.id %}" class="small text-accent text-decoration-none opacity-75">Select Profile</a>
                             </div>
                         </div>
                     </div>
@@ -83,9 +83,9 @@
         transition: var(--transition);
     }
     input:focus, select:focus, textarea:focus {
-        border-color: var(--primary-rose) !important;
+        border-color: var(--primary-accent) !important;
         outline: none;
-        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
     }
     option { color: black !important; }
     textarea { border-radius: 20px !important; }

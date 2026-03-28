@@ -7,7 +7,7 @@
         <div class="col-md-6 col-lg-5">
             <div class="glass-card p-5 animate-fade shadow-lg">
                 <div class="text-center mb-5">
-                    <div class="display-5 text-rose mb-3" style="color: var(--primary-rose);"><i class="fas fa-stethoscope"></i></div>
+                    <div class="display-5 text-accent mb-3" style="color: var(--primary-accent);"><i class="fas fa-stethoscope"></i></div>
                     <h2 class="fw-bold">Doctor Portal</h2>
                     <p class="text-muted">Access clinical AI insights & patient data.</p>
                 </div>
@@ -45,7 +45,7 @@
                     
                     <div class="mt-4 text-center">
                         <p class="small text-muted mb-0">Don't have a clinical account?</p>
-                        <a href="{% url 'doctor_register' %}" class="text-rose fw-bold text-decoration-none small">Apply for Registration</a>
+                        <a href="{% url 'doctor_register' %}" class="text-accent fw-bold text-decoration-none small">Apply for Registration</a>
                     </div>
                 </form>
             </div>
@@ -62,8 +62,8 @@
         padding-left: 10px;
     }
     .input-group:focus-within {
-        border-color: var(--primary-rose);
-        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+        border-color: var(--primary-accent);
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
     }
     .form-control {
         background: transparent !important;

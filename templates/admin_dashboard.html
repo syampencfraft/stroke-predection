@@ -8,10 +8,10 @@
             <p class="text-muted mb-0">Manage clinical network and user accounts.</p>
         </div>
         <div class="d-flex gap-3">
-            <a href="{% url 'admin_messages' %}" class="btn btn-outline-rose rounded-pill px-4" style="border: 1px solid var(--primary-rose); color: var(--primary-rose);">
+            <a href="{% url 'admin_messages' %}" class="btn btn-outline-rose rounded-pill px-4" style="border: 1px solid var(--primary-accent); color: var(--primary-accent);">
                 <i class="fas fa-envelope me-2"></i>Contact Messages
             </a>
-            <div class="badge bg-rose-transparent text-rose px-3 py-2 rounded-pill" style="background: rgba(233, 30, 99, 0.1); border: 1px solid var(--primary-rose);">
+            <div class="badge bg-accent-transparent text-accent px-3 py-2 rounded-pill" style="background: rgba(0, 229, 255, 0.1); border: 1px solid var(--primary-accent);">
                 <i class="fas fa-user-shield me-2"></i>ADMIN ACCESS
             </div>
         </div>
@@ -19,17 +19,17 @@
 
     <!-- Doctors Table -->
     <div class="mb-5">
-        <h4 class="fw-bold mb-4"><i class="fas fa-user-md me-2 text-rose" style="color: var(--primary-rose);"></i>Medical Practitioners</h4>
+        <h4 class="fw-bold mb-4"><i class="fas fa-user-md me-2 text-accent" style="color: var(--primary-accent);"></i>Medical Practitioners</h4>
         <div class="glass-card overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" style="color: var(--text-white);">
                     <thead style="background: rgba(255, 255, 255, 0.05);">
                         <tr>
-                            <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">DOCTOR</th>
-                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">SPECIALIZATION</th>
-                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">LICENSE</th>
-                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">STATUS</th>
-                            <th class="py-3 border-secondary text-rose text-end pe-4" style="color: var(--primary-rose);">ACTION</th>
+                            <th class="ps-4 py-3 border-secondary text-accent" style="color: var(--primary-accent);">DOCTOR</th>
+                            <th class="py-3 border-secondary text-accent" style="color: var(--primary-accent);">SPECIALIZATION</th>
+                            <th class="py-3 border-secondary text-accent" style="color: var(--primary-accent);">LICENSE</th>
+                            <th class="py-3 border-secondary text-accent" style="color: var(--primary-accent);">STATUS</th>
+                            <th class="py-3 border-secondary text-accent text-end pe-4" style="color: var(--primary-accent);">ACTION</th>
                         </tr>
                     </thead>
                     <tbody class="border-top-0">
@@ -40,7 +40,7 @@
                                     {% if d.profile_image %}
                                     <img src="{{ d.profile_image.url }}" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid var(--glass-border);">
                                     {% else %}
-                                    <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-rose fw-bold" style="width: 40px; height: 40px; border: 1px solid var(--glass-border);">{% if d.user.first_name %}{{ d.user.first_name|slice:":1" }}{% endif %}{% if d.user.last_name %}{{ d.user.last_name|slice:":1" }}{% elif not d.user.first_name %}{{ d.user.username|slice:":1" }}{% endif %}</div>
+                                    <div class="bg-dark rounded-circle me-3 d-flex align-items-center justify-content-center text-accent fw-bold" style="width: 40px; height: 40px; border: 1px solid var(--glass-border);">{% if d.user.first_name %}{{ d.user.first_name|slice:":1" }}{% endif %}{% if d.user.last_name %}{{ d.user.last_name|slice:":1" }}{% elif not d.user.first_name %}{{ d.user.username|slice:":1" }}{% endif %}</div>
                                     {% endif %}
                                     <div>
                                         <div class="fw-bold">Dr. {% if d.user.first_name or d.user.last_name %}{{ d.user.first_name }}{% if d.user.first_name and d.user.last_name %} {% endif %}{{ d.user.last_name }}{% else %}{{ d.user.username }}{% endif %}</div>
@@ -49,7 +49,7 @@
                                 </div>
                             </td>
                             <td>{{ d.specialization }}</td>
-                            <td><code class="text-rose" style="color: #ff80ab;">{{ d.license_number }}</code></td>
+                            <td><code class="text-accent" style="color: #ff80ab;">{{ d.license_number }}</code></td>
                             <td>
                                 {% if d.is_verified %}
                                 <span class="badge bg-success-subtle text-success border border-success px-3 py-2" style="background: rgba(25, 135, 84, 0.1);">Verified</span>
@@ -74,16 +74,16 @@
 
     <!-- Patients/Users Table -->
     <div>
-        <h4 class="fw-bold mb-4"><i class="fas fa-users me-2 text-rose" style="color: var(--primary-rose);"></i>Patients & Users</h4>
+        <h4 class="fw-bold mb-4"><i class="fas fa-users me-2 text-accent" style="color: var(--primary-accent);"></i>Patients & Users</h4>
         <div class="glass-card overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" style="color: var(--text-white);">
                     <thead style="background: rgba(255, 255, 255, 0.05);">
                         <tr>
-                            <th class="ps-4 py-3 border-secondary text-rose" style="color: var(--primary-rose);">USER</th>
-                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">AGE/GENDER</th>
-                            <th class="py-3 border-secondary text-rose" style="color: var(--primary-rose);">DATA STATUS</th>
-                            <th class="py-3 border-secondary text-rose text-end pe-4" style="color: var(--primary-rose);">JOINED</th>
+                            <th class="ps-4 py-3 border-secondary text-accent" style="color: var(--primary-accent);">USER</th>
+                            <th class="py-3 border-secondary text-accent" style="color: var(--primary-accent);">AGE/GENDER</th>
+                            <th class="py-3 border-secondary text-accent" style="color: var(--primary-accent);">DATA STATUS</th>
+                            <th class="py-3 border-secondary text-accent text-end pe-4" style="color: var(--primary-accent);">JOINED</th>
                         </tr>
                     </thead>
                     <tbody class="border-top-0">

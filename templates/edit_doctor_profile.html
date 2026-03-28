@@ -21,13 +21,13 @@
                         <div class="col-12 text-center mb-4">
                             <div class="position-relative d-inline-block">
                                 {% if doctor.profile_image %}
-                                <img src="{{ doctor.profile_image.url }}" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid var(--primary-rose);">
+                                <img src="{{ doctor.profile_image.url }}" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid var(--primary-accent);">
                                 {% else %}
-                                <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-rose shadow" style="width: 120px; height: 120px; border: 3px solid var(--glass-border);">
+                                <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-accent shadow" style="width: 120px; height: 120px; border: 3px solid var(--glass-border);">
                                     <i class="fas fa-user-md fa-3x"></i>
                                 </div>
                                 {% endif %}
-                                <label for="id_profile_image" class="position-absolute bottom-0 end-0 bg-rose p-2 rounded-circle shadow cursor-pointer" style="background: var(--primary-rose); color: white; cursor: pointer;">
+                                <label for="id_profile_image" class="position-absolute bottom-0 end-0 bg-accent p-2 rounded-circle shadow cursor-pointer" style="background: var(--primary-accent); color: white; cursor: pointer;">
                                     <i class="fas fa-camera small"></i>
                                 </label>
                             </div>
@@ -55,7 +55,7 @@
                         </div>
 
                         <div class="col-12 mt-5">
-                            <div class="p-4 rounded-4" style="background: rgba(233, 30, 99, 0.05); border: 1px dashed rgba(233, 30, 99, 0.2);">
+                            <div class="p-4 rounded-4" style="background: rgba(0, 229, 255, 0.05); border: 1px dashed rgba(0, 229, 255, 0.2);">
                                 <h6 class="fw-bold mb-2">Professional Commitment</h6>
                                 <p class="small text-muted mb-0">Your profile is currently verified. Significant changes to your clinical information may trigger a re-verification process by the system administration.</p>
                             </div>
@@ -86,9 +86,9 @@
         transition: var(--transition);
     }
     input:focus, select:focus, textarea:focus {
-        border-color: var(--primary-rose) !important;
+        border-color: var(--primary-accent) !important;
         outline: none;
-        box-shadow: 0 0 15px rgba(233, 30, 99, 0.15);
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
     }
     option { color: black !important; }
     .cursor-pointer { cursor: pointer; }
